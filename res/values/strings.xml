@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="hello">Hello android-native!</string>
     <string name="app_name">ToDoApp Android Client</string>
-    
+
     <!-- Error messages -->
     <string name="error_title">an error occurred.</string>
     <string name="error_network">a network connection could\'t be established.</string>
     <string name="error_authorization">you are not authorized to connect. Please log in.</string>
+
+    <!-- login screen -->
+    <string name="headline_login">ToDoApp. please login.</string>
+    <string name="label_email">email</string>
+    <string name="label_password">password</string>
+    <string name="label_btn_login">login</string>
+    <string name="label_signup">signup</string>
+    <string name="label_no_account">no account yet?</string>
+    <string name="label_btn_signup">signup</string>
+
 </resources>

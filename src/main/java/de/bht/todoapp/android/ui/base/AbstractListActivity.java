@@ -8,8 +8,8 @@ package de.bht.todoapp.android.ui.base;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import de.bht.todoapp.R;
 import de.bht.todoapp.android.MainApplication;
+import de.bht.todoapp.android.R;
 
 /**
  * @author Markus Lamm

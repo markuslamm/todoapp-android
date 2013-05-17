@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -68,7 +69,7 @@ public class ItemDetailActivity extends AbstractActivity
 			txtDescription.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.DESCRIPTION_COLUMN)));
 			txtLatitude.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.LATITUDE_COLUMN)));
 			txtLongitude.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.LONGITUDE_COLUMN)));
-			final Date dueDate = new Date(cursor.getInt(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN)));
+			final Date dueDate = new Date(cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN)));
 			
 			//get formated date
 			DateFormat f = new SimpleDateFormat(FORMAT_DATE);
@@ -83,9 +84,9 @@ public class ItemDetailActivity extends AbstractActivity
     }
     
     public void onClickEditItem(final View view) {
-//    	final Intent i = new Intent(this, FormItemActivity.class);
-//		i.putExtra(TodoItemDescriptor.MIME_ITEM, itemUri);
-//		startActivity(i);
+    	final Intent i = new Intent(this, ItemFormActivity.class);
+		i.putExtra(TodoItemDescriptor.MIME_ITEM, itemUri);
+		startActivity(i);
     }
     
     

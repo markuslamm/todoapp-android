@@ -96,8 +96,8 @@ public class LoginActivity extends AbstractActivity
 			try {
 				isAuthenticated = performAuthentication(email, password);
 			}
-			catch (Exception e) {
-				Log.d(TAG, "Authentication failed!");
+			catch (AuthenticationException e) {
+				Log.d(TAG, e.getMessage());
 				return Boolean.FALSE;
 			}
 			return isAuthenticated;
@@ -105,7 +105,7 @@ public class LoginActivity extends AbstractActivity
 
 		private Boolean performAuthentication(final String user, final String password) throws AuthenticationException {
 			Log.d(TAG, "performAuthentication()...");
-			boolean result = Boolean.FALSE;
+			boolean authenticated = Boolean.FALSE;
 			try {
 				Thread.sleep(2000);
 			}
@@ -113,10 +113,14 @@ public class LoginActivity extends AbstractActivity
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			//TODO
 			// Populate the HTTP Basic Authentitcation header with the username
 			// and password
-			result = (user.equals("111@web.de") && password.equals("111111")) ? Boolean.TRUE : Boolean.FALSE;
-			return result;
+			authenticated = (user.equals("111@web.de") && password.equals("111111")) ? Boolean.TRUE : Boolean.FALSE;
+			if(!authenticated) {
+				throw new AuthenticationException(String.format("Authentication failed! [%s] [%s]", user, password));
+			}
+			return authenticated;
 		}
 
 		/*

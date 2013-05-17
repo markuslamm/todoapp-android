@@ -9,7 +9,7 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/label_titel"
+        android:text="@string/label_title"
         android:textColor="#040404"
         android:typeface="sans"
         android:textSize="15sp"

@@ -46,8 +46,8 @@ public class ItemListActivity extends AbstractListActivity
 	}
 
 	public void onClickCreateItem(final View view) {
-//		final Intent i = new Intent(this, FormItemActivity.class);
-//		startActivity(i);
+		final Intent i = new Intent(this, ItemFormActivity.class);
+		startActivity(i);
 	}
 
 	@Override

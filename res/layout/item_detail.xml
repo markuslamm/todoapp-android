@@ -2,108 +2,65 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:paddingLeft="10dip"
-    android:paddingRight="10dip"
-    android:paddingTop="40dip" >
+    android:fillViewport="true" >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <TextView
-            android:id="@+id/labelTitle"
+            android:id="@+id/headline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_titel"
+            android:text="details"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/labelTitle"
-            android:layout_marginLeft="15dp"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <TextView
-            android:id="@+id/labelDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtTitle"
-            android:text="@string/label_description"
+            android:layout_below="@id/headline"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
             android:id="@+id/txtDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/labelDescription"
-            android:layout_marginLeft="15dp"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <TextView
-            android:id="@+id/labelDueDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtDescription"
-            android:text="@string/label_dueDate"
+            android:layout_below="@id/txtTitle"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
             android:id="@+id/txtDueDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/labelDueDate"
-            android:layout_marginLeft="15dp"
+            android:layout_below="@id/txtDescription"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <TextView
-            android:id="@+id/labelStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtDueDate"
-            android:text="@string/label_status"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+       
 
         <TextView
             android:id="@+id/txtStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/labelStatus"
-            android:layout_marginLeft="10dp"
+            android:layout_below="@id/txtDueDate"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <TextView
-            android:id="@+id/labelLatitude"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtStatus"
-            android:text="@string/label_latitude"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+        
 
         <TextView
             android:id="@+id/txtLatitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/labelLatitude"
-            android:layout_marginLeft="15dp"
+            android:layout_below="@id/txtStatus"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <TextView
-            android:id="@+id/labelLongitude"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtLatitude"
-            android:text="@string/label_longitude"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
+       
         <TextView
             android:id="@+id/txtLongitude"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/labelLongitude"
-            android:layout_marginLeft="10dp"
+            android:layout_below="@id/txtLatitude"
+
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <TextView
@@ -119,7 +76,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/labelIsFavourite"
-            android:layout_marginLeft="10dp" />
+ />
 
         <Button
             android:id="@+id/btnEditItem"

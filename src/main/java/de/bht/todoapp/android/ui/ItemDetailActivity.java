@@ -3,10 +3,7 @@
  */
 package de.bht.todoapp.android.ui;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,6 +16,7 @@ import android.widget.TextView;
 import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.provider.TodoItemDescriptor;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
+import de.bht.todoapp.android.util.DateHelper;
 
 /**
  * @author markus
@@ -33,6 +31,8 @@ public class ItemDetailActivity extends AbstractActivity
 	private TextView txtLatitude;
 	private TextView txtLongitude;
 	private TextView txtDueDate;
+	private TextView txtTime;
+
 	private TextView txtStatus;
 	private CheckBox chkIsFavourite;
 	
@@ -50,6 +50,7 @@ public class ItemDetailActivity extends AbstractActivity
         txtLatitude = (TextView) findViewById(R.id.txtLatitude);
         txtLongitude = (TextView) findViewById(R.id.txtLongitude);
         txtDueDate = (TextView) findViewById(R.id.txtDueDate);
+        txtTime = (TextView) findViewById(R.id.txtTime);
         txtStatus = (TextView) findViewById(R.id.txtStatus);
         chkIsFavourite = (CheckBox) findViewById(R.id.chk_isFavourite);
         
@@ -70,12 +71,8 @@ public class ItemDetailActivity extends AbstractActivity
 			txtLatitude.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.LATITUDE_COLUMN)));
 			txtLongitude.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.LONGITUDE_COLUMN)));
 			final Date dueDate = new Date(cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN)));
-			
-			//get formated date
-			DateFormat f = new SimpleDateFormat(FORMAT_DATE);
-			f.setTimeZone(TimeZone.getDefault());
-			String date = f.format(dueDate);
-			txtDueDate.setText(date);
+			txtDueDate.setText(DateHelper.getDateString(dueDate));
+			txtTime.setText(DateHelper.getTimeString(dueDate));
 			txtStatus.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN)));
 			final int isFavourite = cursor.getInt(cursor.getColumnIndex(TodoItemDescriptor.ISFAVOURITE_COLUMN));
 			chkIsFavourite.setChecked( (isFavourite == 0) ? Boolean.FALSE : Boolean.TRUE);

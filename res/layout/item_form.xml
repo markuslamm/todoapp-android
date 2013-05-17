@@ -113,7 +113,7 @@
             android:layout_below="@+id/btn_select_date"
             android:drawableLeft="@drawable/ic_clock"
             android:drawablePadding="5dp"
-            android:onClick="onClickSelectDate"
+            android:onClick="onClickSelectTime"
             android:text="@string/label_select_time" />
 
         <Button

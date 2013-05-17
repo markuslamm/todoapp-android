@@ -17,7 +17,7 @@ public class TodoItem extends BaseEntity
 	private String status;
 	private boolean isFavourite;
 
-	private long dueDate;
+	private Long dueDate;
 	private double longitude;
 	private double latitude;
 	
@@ -82,14 +82,14 @@ public class TodoItem extends BaseEntity
 	/**
 	 * @return the dueDate
 	 */
-	public long getDueDate() {
+	public Long getDueDate() {
 		return dueDate;
 	}
 
 	/**
 	 * @param dueDate the dueDate to set
 	 */
-	public void setDueDate(final long dueDate) {
+	public void setDueDate(final Long dueDate) {
 		this.dueDate = dueDate;
 	}
 

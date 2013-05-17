@@ -36,13 +36,20 @@
             android:layout_below="@id/txtDescription"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
+        <TextView
+            android:id="@+id/txtTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtDueDate"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+        
        
 
         <TextView
             android:id="@+id/txtStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtDueDate"
+            android:layout_below="@id/txtTime"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         

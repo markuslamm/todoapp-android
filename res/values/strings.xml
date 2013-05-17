@@ -8,14 +8,31 @@
     <string name="error_title">an error occurred.</string>
     <string name="error_network">a network connection could\'t be established.</string>
     <string name="error_authorization">you are not authorized to connect. Please log in.</string>
-
-    <!-- login screen -->
+	<string name="error_email_format">invalid email format</string>
+    <string name="error_password_format">invalid password format</string>
+    
+    <!-- login screen --> 
     <string name="headline_login">ToDoApp. please login.</string>
     <string name="label_email">email</string>
     <string name="label_password">password</string>
     <string name="label_btn_login">login</string>
-    <string name="label_signup">signup</string>
-    <string name="label_no_account">no account yet?</string>
-    <string name="label_btn_signup">signup</string>
+    <string name="progress_authenticating">authenticating</string>
+    
+    
+    <!-- item list -->
+    <string name="no_items_available_label">no items available</string>
+    <string name="progress_loadingitemlist">loading todo items</string>
+    <string name="label_create_item">create item</string>
+    
+     <!-- item detail -->
+    <string name="label_edit_item">edit item</string>
+    <string name="label_titel">titel</string>
+    <string name="label_description">description</string>
+    <string name="label_latitude">latitude</string>
+    <string name="label_longitude">longitude</string>
+    <string name="label_dueDate">due date</string>
+    <string name="label_status">status</string>
+    <string name="label_isFavourite">is favourite?</string>
+    
 
 </resources>

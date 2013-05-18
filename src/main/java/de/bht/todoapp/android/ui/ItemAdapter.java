@@ -46,11 +46,10 @@ public class ItemAdapter extends CursorAdapter
 		final TextView txtIsFavourite = (TextView) view.findViewById(R.id.importance);
 		txtTitle.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.TITLE_COLUMN)));
 		final Long dateInMillis = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN));
-		final String date = DateHelper.getDateString(dateInMillis);
-		final String time = DateHelper.getTimeString(dateInMillis);
-		txtDueDate.setText(date + " | " + time);
+		txtDueDate.setText(generateDateTime(dateInMillis));
 		txtStatus.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN)));
-		txtIsFavourite.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.ISFAVOURITE_COLUMN)));
+		final int isFavourite = cursor.getInt(cursor.getColumnIndex(TodoItemDescriptor.ISFAVOURITE_COLUMN));
+		txtIsFavourite.setText((isFavourite == 0 ? "" : "isFavourite"));
 	}
 
 	/*
@@ -63,5 +62,15 @@ public class ItemAdapter extends CursorAdapter
 	public View newView(Context context, Cursor cursor, ViewGroup parent) {
 		final View view = inflater.inflate(R.layout.item_row, parent, false);
 		return view;
+	}
+	
+	/**
+	 * @param dateInMillis
+	 * @return
+	 */
+	private String generateDateTime(final Long dateInMillis) {
+		final String date = DateHelper.getDateString(dateInMillis);
+		final String time = DateHelper.getTimeString(dateInMillis);
+		return new StringBuffer(date).append(" | ").append(time).toString();
 	}
 }

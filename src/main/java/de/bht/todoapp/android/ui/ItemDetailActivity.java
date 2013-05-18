@@ -3,8 +3,6 @@
  */
 package de.bht.todoapp.android.ui;
 
-import java.util.Date;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -16,6 +14,7 @@ import android.widget.TextView;
 import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.provider.TodoItemDescriptor;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
+import de.bht.todoapp.android.util.DateHelper;
 
 /**
  * @author markus
@@ -29,15 +28,13 @@ public class ItemDetailActivity extends AbstractActivity
 	private TextView txtDescription;
 	private TextView txtLatitude;
 	private TextView txtLongitude;
-	private TextView txtDueDate;
+	private TextView txtDate;
 	private TextView txtTime;
 
 	private TextView txtStatus;
 	private CheckBox chkIsFavourite;
 	
 	private Uri itemUri;
-	
-	private static final String FORMAT_DATE="dd-MM-yyyy | HH:mm";
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,7 +45,7 @@ public class ItemDetailActivity extends AbstractActivity
         txtDescription = (TextView) findViewById(R.id.txtDescription);
         txtLatitude = (TextView) findViewById(R.id.txtLatitude);
         txtLongitude = (TextView) findViewById(R.id.txtLongitude);
-        txtDueDate = (TextView) findViewById(R.id.txtDueDate);
+        txtDate = (TextView) findViewById(R.id.txtDueDate);
         txtTime = (TextView) findViewById(R.id.txtTime);
         txtStatus = (TextView) findViewById(R.id.txtStatus);
         chkIsFavourite = (CheckBox) findViewById(R.id.chk_isFavourite);
@@ -69,9 +66,9 @@ public class ItemDetailActivity extends AbstractActivity
 			txtDescription.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.DESCRIPTION_COLUMN)));
 			txtLatitude.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.LATITUDE_COLUMN)));
 			txtLongitude.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.LONGITUDE_COLUMN)));
-			final Date dueDate = new Date(cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN)));
-//			txtDueDate.setText(DateHelper.getDateString(dueDate));
-//			txtTime.setText(DateHelper.getTimeString(dueDate));
+			final Long dateInMillis = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN));
+			txtDate.setText(DateHelper.getDateString(dateInMillis));
+			txtTime.setText(DateHelper.getTimeString(dateInMillis));
 			txtStatus.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN)));
 			final int isFavourite = cursor.getInt(cursor.getColumnIndex(TodoItemDescriptor.ISFAVOURITE_COLUMN));
 			chkIsFavourite.setChecked( (isFavourite == 0) ? Boolean.FALSE : Boolean.TRUE);

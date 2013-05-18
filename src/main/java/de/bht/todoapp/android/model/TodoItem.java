@@ -3,26 +3,28 @@
  */
 package de.bht.todoapp.android.model;
 
-
 /**
  * @author markus
- *
+ * 
  */
 public class TodoItem extends BaseEntity
 {
-	public enum Status { OPEN, CLOSED }
-	
+	public enum Status
+	{
+		OPEN, CLOSED;		
+	}
+
 	private String title;
 	private String description;
-
-	private String status;
 	private boolean isFavourite;
-
 	private Long dueDate;
 	private double longitude;
 	private double latitude;
-	
-	public TodoItem() { }
+	private Status status;
+
+	public TodoItem()
+	{
+	}
 
 	/**
 	 * @return the title
@@ -32,7 +34,8 @@ public class TodoItem extends BaseEntity
 	}
 
 	/**
-	 * @param title the title to set
+	 * @param title
+	 *            the title to set
 	 */
 	public void setTitle(final String title) {
 		this.title = title;
@@ -46,24 +49,11 @@ public class TodoItem extends BaseEntity
 	}
 
 	/**
-	 * @param description the description to set
+	 * @param description
+	 *            the description to set
 	 */
 	public void setDescription(final String description) {
 		this.description = description;
-	}
-
-	/**
-	 * @return the status
-	 */
-	public String getStatus() {
-		return status;
-	}
-
-	/**
-	 * @param status the status to set
-	 */
-	public void setStatus(final String status) {
-		this.status = status;
 	}
 
 	/**
@@ -74,7 +64,8 @@ public class TodoItem extends BaseEntity
 	}
 
 	/**
-	 * @param isFavourite the isFavourite to set
+	 * @param isFavourite
+	 *            the isFavourite to set
 	 */
 	public void setFavourite(final boolean isFavourite) {
 		this.isFavourite = isFavourite;
@@ -88,7 +79,8 @@ public class TodoItem extends BaseEntity
 	}
 
 	/**
-	 * @param dueDate the dueDate to set
+	 * @param dueDate
+	 *            the dueDate to set
 	 */
 	public void setDueDate(final Long dueDate) {
 		this.dueDate = dueDate;
@@ -102,7 +94,8 @@ public class TodoItem extends BaseEntity
 	}
 
 	/**
-	 * @param longitude the longitude to set
+	 * @param longitude
+	 *            the longitude to set
 	 */
 	public void setLongitude(final double longitude) {
 		this.longitude = longitude;
@@ -116,9 +109,30 @@ public class TodoItem extends BaseEntity
 	}
 
 	/**
-	 * @param latitude the latitude to set
+	 * @param latitude
+	 *            the latitude to set
 	 */
 	public void setLatitude(final double latitude) {
 		this.latitude = latitude;
 	}
+
+	/**
+	 * @return the status
+	 */
+	public Status getStatus() {
+		return status;
+	}
+
+	/**
+	 * @param status
+	 *            the status to set
+	 */
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+	
+	public static Status getStatusFromString(final String status) {
+		return (status.equals("OPEN") ? Status.OPEN : Status.CLOSED);
+	}
+
 }

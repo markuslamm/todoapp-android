@@ -16,7 +16,6 @@ import android.widget.TextView;
 import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.provider.TodoItemDescriptor;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
-import de.bht.todoapp.android.util.DateHelper;
 
 /**
  * @author markus
@@ -71,8 +70,8 @@ public class ItemDetailActivity extends AbstractActivity
 			txtLatitude.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.LATITUDE_COLUMN)));
 			txtLongitude.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.LONGITUDE_COLUMN)));
 			final Date dueDate = new Date(cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN)));
-			txtDueDate.setText(DateHelper.getDateString(dueDate));
-			txtTime.setText(DateHelper.getTimeString(dueDate));
+//			txtDueDate.setText(DateHelper.getDateString(dueDate));
+//			txtTime.setText(DateHelper.getTimeString(dueDate));
 			txtStatus.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN)));
 			final int isFavourite = cursor.getInt(cursor.getColumnIndex(TodoItemDescriptor.ISFAVOURITE_COLUMN));
 			chkIsFavourite.setChecked( (isFavourite == 0) ? Boolean.FALSE : Boolean.TRUE);

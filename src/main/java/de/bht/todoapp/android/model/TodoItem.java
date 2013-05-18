@@ -3,6 +3,7 @@
  */
 package de.bht.todoapp.android.model;
 
+
 /**
  * @author markus
  *

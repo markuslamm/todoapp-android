@@ -12,6 +12,7 @@ import android.widget.CursorAdapter;
 import android.widget.TextView;
 import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.provider.TodoItemDescriptor;
+import de.bht.todoapp.android.util.DateHelper;
 
 /**
  * @author markus
@@ -40,11 +41,14 @@ public class ItemAdapter extends CursorAdapter
 	@Override
 	public void bindView(View view, Context context, Cursor cursor) {
 		final TextView txtTitle = (TextView) view.findViewById(R.id.title);
-		final TextView txtDueDate = (TextView) view.findViewById(R.id.dueDate);
+		final TextView txtDueDate = (TextView) view.findViewById(R.id.dueDateTime);
 		final TextView txtStatus = (TextView) view.findViewById(R.id.status);
 		final TextView txtIsFavourite = (TextView) view.findViewById(R.id.importance);
 		txtTitle.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.TITLE_COLUMN)));
-		txtDueDate.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN)));
+		final Long dateInMillis = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN));
+		final String date = DateHelper.getDateString(dateInMillis);
+		final String time = DateHelper.getTimeString(dateInMillis);
+		txtDueDate.setText(date + " | " + time);
 		txtStatus.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN)));
 		txtIsFavourite.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.ISFAVOURITE_COLUMN)));
 	}

@@ -9,7 +9,6 @@ package de.bht.todoapp.android.ui;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.TimeZone;
 
 import android.app.DatePickerDialog;
@@ -31,7 +30,6 @@ import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.provider.TodoItemDescriptor;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
-import de.bht.todoapp.android.util.DateHelper;
 
 /**
  * @author Markus Lamm
@@ -88,7 +86,7 @@ public class ItemFormActivity extends AbstractActivity
 			itemUri = extras.getParcelable(TodoItemDescriptor.MIME_ITEM);
 			Log.d(TAG, "Item URI received: " + itemUri);
 			itemModel = populateItem(itemUri);
-			fillData(itemModel);
+			//fillData(itemModel);
 		}
 		// is new
 		else {
@@ -122,7 +120,7 @@ public class ItemFormActivity extends AbstractActivity
 			item.setDescription(description);
 			item.setLatitude(latitude);
 			item.setLongitude(longitude);
-			item.setDueDate(dueDate);
+			//item.setDueDate(dueDate);
 			item.setFavourite(isFavourite);
 			item.setStatus(status);
 		}
@@ -336,36 +334,36 @@ public class ItemFormActivity extends AbstractActivity
 		final Calendar c = Calendar.getInstance();
 		switch (id) {
 			case DATE_DIALOG_ID:
-				int year;
-				int month;
-				int day;
-				if (itemUri == null) {
-					year = c.get(Calendar.YEAR);
-					month = c.get(Calendar.MONTH);
-					day = c.get(Calendar.DAY_OF_MONTH);
-				}
-				else {
-					final Date date = new Date(itemModel.getDueDate());
-					year = date.getYear();
-					month = date.getMonth();
-					day = date.getDay();
-				}
-				// set date picker as current date
-				return new DatePickerDialog(this, datePickerListener, year, month, day);
-			case TIME_DIALOG_ID:
-				int hour;
-				int minute;
-				if (itemUri == null) {
-					hour = c.get(Calendar.HOUR);
-					minute = c.get(Calendar.MINUTE);
-				}
-				else {
-					final Date date = new Date(itemModel.getDueDate());
-					hour = date.getHours();
-					minute = date.getMinutes();
-				}
-				return new TimePickerDialog(this, timePickerListener, hour, minute, true);
-				
+//				int year;
+//				int month;
+//				int day;
+//				if (itemUri == null) {
+//					year = c.get(Calendar.YEAR);
+//					month = c.get(Calendar.MONTH);
+//					day = c.get(Calendar.DAY_OF_MONTH);
+//				}
+//				else {
+////					final Date date = new Date(itemModel.getDueDate());
+////					year = date.getYear();
+////					month = date.getMonth();
+////					day = date.getDay();
+//				}
+//				// set date picker as current date
+//				return new DatePickerDialog(this, datePickerListener, year, month, day);
+//			case TIME_DIALOG_ID:
+//				int hour;
+//				int minute;
+//				if (itemUri == null) {
+//					hour = c.get(Calendar.HOUR);
+//					minute = c.get(Calendar.MINUTE);
+//				}
+//				else {
+////					final Date date = new Date(itemModel.getDueDate());
+////					hour = date.getHours();
+////					minute = date.getMinutes();
+//				}
+//				return new TimePickerDialog(this, timePickerListener, hour, minute, true);
+//				
 				
 		}
 		return null;
@@ -392,10 +390,10 @@ public class ItemFormActivity extends AbstractActivity
 	{
 		// when dialog box is closed, below method will be called.
 		public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
-			final Date date = new Date(selectedYear, selectedMonth, selectedDay);
-			itemModel.setDueDate(date.getTime());
-			final String strDate = DateHelper.getDateString(date);
-			txtDate.setText(strDate);
+//			final Date date = new Date(selectedYear, selectedMonth, selectedDay);
+//			itemModel.setDueDate(date.getTime());
+//			final String strDate = DateHelper.getDateString(date);
+//			txtDate.setText(strDate);
 		}
 	};
 

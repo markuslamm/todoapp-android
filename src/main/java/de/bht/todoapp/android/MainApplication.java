@@ -3,6 +3,8 @@
  */
 package de.bht.todoapp.android;
 
+import java.util.Calendar;
+
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
@@ -21,7 +23,7 @@ import de.bht.todoapp.android.provider.TodoItemDescriptor;
 public class MainApplication extends Application
 {
 	private static final String TAG = MainApplication.class.getSimpleName();
-	private final static boolean CREATE_DATA = false;
+	private final static boolean CREATE_DATA = true;
 
 	/*
 	 * (non-Javadoc)
@@ -30,6 +32,7 @@ public class MainApplication extends Application
 	 */
 	@Override
 	public void onCreate() {
+		
 		Log.d(TAG, "Application onCreate()...");
 		if(CREATE_DATA) {
 			storeTodoItems(5);
@@ -82,7 +85,7 @@ public class MainApplication extends Application
 			final boolean isFavourite = ((i % 2 == 0) ? Boolean.FALSE : Boolean.TRUE);
 			value.put(TodoItemDescriptor.ISFAVOURITE_COLUMN, isFavourite);
 			value.put(TodoItemDescriptor.STATUS_COLUMN, status);
-			value.put(TodoItemDescriptor.DUEDATE_COLUMN, System.currentTimeMillis());
+			value.put(TodoItemDescriptor.DUEDATE_COLUMN, Calendar.getInstance().getTimeInMillis());
 			value.put(TodoItemDescriptor.LATITUDE_COLUMN, 48.4532453 + 0.01);
 			value.put(TodoItemDescriptor.LONGITUDE_COLUMN, 10.5324544 + 0.011);
 			getContentResolver().insert(TodoItemDescriptor.CONTENT_URI, value);

@@ -49,6 +49,7 @@ public class ItemDetailActivity extends AbstractActivity
         txtTime = (TextView) findViewById(R.id.txtTime);
         txtStatus = (TextView) findViewById(R.id.txtStatus);
         chkIsFavourite = (CheckBox) findViewById(R.id.chk_isFavourite);
+        chkIsFavourite.setEnabled(false);
         
         final Bundle extras = getIntent().getExtras();
 		if (extras != null && extras.containsKey(TodoItemDescriptor.MIME_ITEM)) {
@@ -56,6 +57,13 @@ public class ItemDetailActivity extends AbstractActivity
 			Log.d(TAG, "Item URI received: " + itemUri);
 			fillData(itemUri);
 		}
+    }
+    
+    public void onClickDeleteItem(final View view) {
+    	final int deleteCount = getContentResolver().delete(itemUri, null, null);
+    	Log.d(TAG, deleteCount + " item deleted");
+    	final Intent intent = new Intent(this, ItemListActivity.class);
+    	startActivity(intent);
     }
     
     private void fillData(final Uri uri) {

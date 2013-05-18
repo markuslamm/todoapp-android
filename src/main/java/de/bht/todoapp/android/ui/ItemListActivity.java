@@ -75,7 +75,7 @@ public class ItemListActivity extends AbstractListActivity
 		protected Cursor doInBackground(Void... params) {
 			cursor = getContentResolver().query(TodoItemDescriptor.CONTENT_URI, null, null, null, null);
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			}
 			catch(InterruptedException e) {
 				Log.d(TAG, e.getMessage());

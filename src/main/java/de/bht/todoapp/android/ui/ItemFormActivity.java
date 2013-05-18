@@ -12,6 +12,8 @@ import java.util.Locale;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +30,8 @@ import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.provider.TodoItemDescriptor;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
+import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
+import de.bht.todoapp.android.ui.base.BaseActivity;
 import de.bht.todoapp.android.util.DateHelper;
 
 /**
@@ -50,25 +54,19 @@ public class ItemFormActivity extends AbstractActivity
 	private CheckBox chkIsFavourite;
 	private Spinner spnStatus;
 
-	private int curreYear;
-	private int currentMonth;
-	private int currentDay;
-
 	private Uri itemUri = null;
 	private TodoItem itemModel = null;
 
 	private static final int DATE_DIALOG_ID = 10;
 	private static final int TIME_DIALOG_ID = 20;
 
-	// private SharedPreferences settings;
-	// private SaveItemTask saveTask = null;
+	private SaveItemTask saveTask = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.item_form);
 		initWidgets();
-		// settings = getMainApplication().getSettings();
 		// new or edit item form
 		final Bundle extras = getIntent().getExtras();
 		String headline = null;
@@ -85,10 +83,11 @@ public class ItemFormActivity extends AbstractActivity
 		else {
 			headline = getString(R.string.label_create_item);
 			spnStatus.setEnabled(false);
+			spnStatus.setSelection(1);
 		}
 		txtHeadline.setText(headline);
 		itemModel = populateItem(itemUri);
-		if(itemModel != null) {
+		if (itemModel != null) {
 			fillData(itemModel);
 		}
 	}
@@ -99,7 +98,8 @@ public class ItemFormActivity extends AbstractActivity
 			final Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 			if (cursor != null) {
 				cursor.moveToFirst();
-				final Long entityId = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.SERVERID_COLUMN));
+				final Long internalId = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.ID_COLUMN));
+				final Long remoteId = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.SERVERID_COLUMN));
 				final String title = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.TITLE_COLUMN));
 				final String description = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.DESCRIPTION_COLUMN));
 				final double latitude = cursor.getDouble(cursor.getColumnIndex(TodoItemDescriptor.LATITUDE_COLUMN));
@@ -110,6 +110,8 @@ public class ItemFormActivity extends AbstractActivity
 						: Boolean.TRUE;
 				cursor.close();
 
+				item.setInternalId(internalId);
+				item.setRemoteId(remoteId);
 				item.setTitle(title);
 				item.setDescription(description);
 				item.setLatitude(latitude);
@@ -140,7 +142,8 @@ public class ItemFormActivity extends AbstractActivity
 		txtDate.setText(DateHelper.getDateString(itemModel.getDueDate()));
 		txtTime.setText(DateHelper.getTimeString(itemModel.getDueDate()));
 		chkIsFavourite.setChecked(item.isFavourite() ? Boolean.TRUE : Boolean.FALSE);
-		spnStatus.setSelection(item.getStatus().equals("OPEN") ? 0 : 1);
+		Log.d(TAG, "Status: " + item.getStatus());
+		spnStatus.setSelection(item.getStatus().equals(TodoItem.Status.OPEN) ? 0 : 1);
 	}
 
 	private void initWidgets() {
@@ -156,16 +159,16 @@ public class ItemFormActivity extends AbstractActivity
 		spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+				String item = parent.getAdapter().getItem(position).toString();
+				Log.d(TAG, "Spinner item selected: " + item);
+				itemModel.setStatus(TodoItem.getStatusFromString(item));
 			}
 
 			@Override
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		});
-	}
-
-	public void onClickSaveItem(final View view) {
 	}
 
 	public void onClickSelectDate(final View view) {
@@ -207,7 +210,7 @@ public class ItemFormActivity extends AbstractActivity
 			c.set(Calendar.HOUR_OF_DAY, selectedHour);
 			c.set(Calendar.MINUTE, selectedMinute);
 			itemModel.setDueDate(c.getTimeInMillis());
-			fillData(itemModel);
+			txtTime.setText(DateHelper.getDateString(c.getTimeInMillis()));
 		}
 	};
 
@@ -221,8 +224,76 @@ public class ItemFormActivity extends AbstractActivity
 			c.set(Calendar.MONTH, selectedMonth);
 			c.set(Calendar.DAY_OF_MONTH, selectedDay);
 			itemModel.setDueDate(c.getTimeInMillis());
-			fillData(itemModel);
+			txtDate.setText(DateHelper.getDateString(c.getTimeInMillis()));
 		}
 	};
+
+	public void onClickSaveItem(final View view) {
+		if (null == saveTask) {
+			itemModel.setTitle(txtTitle.getText().toString());
+			itemModel.setDescription(txtDescription.getText().toString());
+			itemModel.setFavourite(chkIsFavourite.isChecked());
+			saveTask = new SaveItemTask(this, getString(R.string.progress_save_item));
+			saveTask.execute(itemModel);
+		}
+	}
+
+	private class SaveItemTask extends AbstractAsyncTask<TodoItem, Void, Uri>
+	{
+		// private Uri newUri = null;
+
+		/**
+		 * @param activity
+		 * @param message
+		 */
+		public SaveItemTask(final BaseActivity activity, final String message)
+		{
+			super(activity, message);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
+		@Override
+		protected Uri doInBackground(TodoItem... items) {
+			final TodoItem item = items[0];
+			final ContentValues values = new ContentValues();
+			values.put(TodoItemDescriptor.SERVERID_COLUMN, Math.round(Math.random() * 1000));
+			values.put(TodoItemDescriptor.TITLE_COLUMN, item.getTitle());
+			values.put(TodoItemDescriptor.DESCRIPTION_COLUMN, item.getDescription());
+			values.put(TodoItemDescriptor.ISFAVOURITE_COLUMN, item.isFavourite());
+			values.put(TodoItemDescriptor.STATUS_COLUMN, item.getStatus().toString());
+			values.put(TodoItemDescriptor.DUEDATE_COLUMN, item.getDueDate());
+			values.put(TodoItemDescriptor.LATITUDE_COLUMN, 13.1111111);
+			values.put(TodoItemDescriptor.LONGITUDE_COLUMN, 53.123456);
+			Uri uri;
+			if(itemUri == null) { // insert
+				uri = getContentResolver().insert(TodoItemDescriptor.CONTENT_URI, values);
+			}
+			else {
+				int count = getContentResolver().update(TodoItemDescriptor.CONTENT_URI, values, "_id=" + item.getInternalId(), null);
+				uri = itemUri;
+			}
+			return uri;
+		}
+
+		@Override
+		protected void onPostExecute(final Uri result) {
+			super.onPostExecute(result);
+			saveTask = null;
+			if (result != null) {
+				Log.d(TAG, "Item saved: " + result);
+				final Intent intent = new Intent(ItemFormActivity.this, ItemListActivity.class);
+				startActivity(intent);
+			}
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+	}
 
 }

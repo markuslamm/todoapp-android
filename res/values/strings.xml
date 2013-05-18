@@ -24,6 +24,7 @@
 
     <!-- item detail -->
     <string name="label_edit_item">edit item</string>
+    <string name="label_delete_item">delete item</string>
     <string name="label_title">title</string>
     <string name="label_description">description</string>
     <string name="label_latitude">latitude</string>
@@ -37,7 +38,8 @@
     <string name="label_select_date">select date</string>
     <string name="label_select_time">select time</string>
     <string name="label_update_item">update item</string>
-
+    <string name="progress_save_item">saving item</string>
+    
     <string-array name="array_status">
         <item>open</item>
         <item>closed</item>

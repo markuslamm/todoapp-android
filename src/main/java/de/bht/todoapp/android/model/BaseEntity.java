@@ -9,19 +9,35 @@ package de.bht.todoapp.android.model;
  */
 public abstract class BaseEntity
 {
-	private Long entityId;
+	private Long internalId;
+	private Long remoteId;
+
 
 	/**
-	 * @return the entityId
+	 * @return
 	 */
-	public Long getEntityId() {
-		return entityId;
+	public Long getInternalId() {
+		return internalId;
 	}
 
 	/**
-	 * @param entityId the entityId to set
+	 * @param internalId
 	 */
-	public void setEntityId(Long entityId) {
-		this.entityId = entityId;
+	public void setInternalId(Long internalId) {
+		this.internalId = internalId;
+	}
+
+	/**
+	 * @return the remoteId
+	 */
+	public Long getRemoteId() {
+		return remoteId;
+	}
+
+	/**
+	 * @param remoteId the remoteId to set
+	 */
+	public void setRemoteId(Long remoteId) {
+		this.remoteId = remoteId;
 	}
 }

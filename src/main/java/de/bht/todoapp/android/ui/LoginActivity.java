@@ -107,7 +107,7 @@ public class LoginActivity extends AbstractActivity
 			Log.d(TAG, "performAuthentication()...");
 			boolean authenticated = Boolean.FALSE;
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(500);
 			}
 			catch (InterruptedException e) {
 				// TODO Auto-generated catch block

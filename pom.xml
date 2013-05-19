@@ -11,6 +11,8 @@
 	<properties>
 		<platform.version>2.3.3</platform.version>
 		<java.version>1.6</java.version>
+		<org.springframework.android-version>1.0.1.RELEASE</org.springframework.android-version>
+		<org.codehaus.jackson-version>1.9.11</org.codehaus.jackson-version>
 	</properties>
 
 	<dependencies>
@@ -19,6 +21,18 @@
 			<artifactId>android</artifactId>
 			<version>${platform.version}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.android</groupId>
+			<artifactId>spring-android-rest-template</artifactId>
+			<version>${org.springframework.android-version}</version>
+		</dependency>
+		
+		<!-- Jackson JSON Processor -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>${org.codehaus.jackson-version}</version>
 		</dependency>
 	</dependencies>
 

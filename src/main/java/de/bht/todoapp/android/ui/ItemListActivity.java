@@ -93,6 +93,7 @@ public class ItemListActivity extends AbstractListActivity
 		protected void onPostExecute(Cursor cursor) {
 			super.onPostExecute(cursor);
 			final ItemListActivity activity = ItemListActivity.this;
+			
 			setListAdapter(new ItemAdapter(activity, cursor));
 		}
     	

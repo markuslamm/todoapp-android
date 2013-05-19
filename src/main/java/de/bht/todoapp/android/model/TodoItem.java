@@ -9,17 +9,20 @@ package de.bht.todoapp.android.model;
  */
 public class TodoItem extends BaseEntity
 {
-	public enum Status
-	{
-		OPEN, CLOSED;		
+	public enum Status {
+		OPEN, CLOSED;
+	}
+
+	public enum Priority {
+		HIGH, MEDIUM, LOW;
 	}
 
 	private String title;
 	private String description;
-	private boolean isFavourite;
 	private Long dueDate;
 	private double longitude;
 	private double latitude;
+	private Priority priority;
 	private Status status;
 
 	public TodoItem()
@@ -54,21 +57,6 @@ public class TodoItem extends BaseEntity
 	 */
 	public void setDescription(final String description) {
 		this.description = description;
-	}
-
-	/**
-	 * @return the isFavourite
-	 */
-	public boolean isFavourite() {
-		return isFavourite;
-	}
-
-	/**
-	 * @param isFavourite
-	 *            the isFavourite to set
-	 */
-	public void setFavourite(final boolean isFavourite) {
-		this.isFavourite = isFavourite;
 	}
 
 	/**
@@ -130,9 +118,68 @@ public class TodoItem extends BaseEntity
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	
-	public static Status getStatusFromString(final String status) {
-		return (status.equals("OPEN") ? Status.OPEN : Status.CLOSED);
+
+	/**
+	 * @return the priority
+	 */
+	public Priority getPriority() {
+		return priority;
 	}
 
+	/**
+	 * @param priority
+	 *            the priority to set
+	 */
+	public void setPriority(final Priority priority) {
+		this.priority = priority;
+	}
+
+	public static Status getStatusFromString(final String status) {
+		Status result = null;
+		if (status.equals(Status.OPEN.toString())) {
+			result = Status.OPEN;
+		}
+		else if (status.equals(Status.CLOSED.toString())) {
+			result = Status.CLOSED;
+		}
+		else {
+			throw new RuntimeException("Unknown status string. Unable to create Status");
+		}
+		return result;
+	}
+
+	public static Priority getPriorityFromString(final String priority) {
+		Priority result = null;
+		if (priority.equals(Priority.HIGH.toString())) {
+			result = Priority.HIGH;
+		}
+		else if (priority.equals(Priority.MEDIUM.toString())) {
+			result = Priority.MEDIUM;
+		}
+		else if (priority.equals(Priority.LOW.toString())) {
+			result = Priority.LOW;
+		}
+		else {
+			throw new RuntimeException("Unknown priority string. Unable to create Priority");
+		}
+		return result;
+	}
+
+	public static int getSpinnerPositionFromPriority(final Priority priority) {
+		int result;
+		switch (priority) {
+			case HIGH:
+				result = 0;
+				break;
+			case MEDIUM:
+				result = 1;
+				break;
+			case LOW:
+				result = 2;
+				break;
+			default:
+				throw new RuntimeException("Unknown Priority. Unable to create spinner position");
+		}
+		return result;
+	}
 }

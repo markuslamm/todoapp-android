@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -51,7 +50,7 @@ public class ItemFormActivity extends AbstractActivity
 	private TextView txtLatitude;
 	private TextView txtLongitude;
 
-	private CheckBox chkIsFavourite;
+	private Spinner spnPriority;
 	private Spinner spnStatus;
 
 	private Uri itemUri = null;
@@ -83,7 +82,8 @@ public class ItemFormActivity extends AbstractActivity
 		else {
 			headline = getString(R.string.label_create_item);
 			spnStatus.setEnabled(false);
-			spnStatus.setSelection(1);
+			spnStatus.setSelection(0);
+			spnPriority.setSelection(1);
 		}
 		txtHeadline.setText(headline);
 		itemModel = populateItem(itemUri);
@@ -106,8 +106,7 @@ public class ItemFormActivity extends AbstractActivity
 				final double longitude = cursor.getDouble(cursor.getColumnIndex(TodoItemDescriptor.LONGITUDE_COLUMN));
 				final long dueDate = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN));
 				final String status = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN));
-				final boolean isFavourite = (cursor.getInt(cursor.getColumnIndex(TodoItemDescriptor.ISFAVOURITE_COLUMN)) == 0) ? Boolean.FALSE
-						: Boolean.TRUE;
+				final String priority = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.PRIORITY_COLUMN));
 				cursor.close();
 
 				item.setInternalId(internalId);
@@ -117,7 +116,7 @@ public class ItemFormActivity extends AbstractActivity
 				item.setLatitude(latitude);
 				item.setLongitude(longitude);
 				item.setDueDate(dueDate);
-				item.setFavourite(isFavourite);
+				item.setPriority(TodoItem.getPriorityFromString(priority));
 				item.setStatus(TodoItem.getStatusFromString(status));
 			}
 			else {
@@ -126,6 +125,7 @@ public class ItemFormActivity extends AbstractActivity
 		}
 		else {
 			item.setStatus(TodoItem.Status.OPEN);
+			item.setPriority(TodoItem.Priority.MEDIUM);
 			item.setDueDate(Calendar.getInstance(Locale.GERMANY).getTimeInMillis());
 		}
 		return item;
@@ -141,8 +141,7 @@ public class ItemFormActivity extends AbstractActivity
 		txtLongitude.setText(String.valueOf(item.getLongitude()));
 		txtDate.setText(DateHelper.getDateString(itemModel.getDueDate()));
 		txtTime.setText(DateHelper.getTimeString(itemModel.getDueDate()));
-		chkIsFavourite.setChecked(item.isFavourite() ? Boolean.TRUE : Boolean.FALSE);
-		Log.d(TAG, "Status: " + item.getStatus());
+		spnPriority.setSelection(TodoItem.getSpinnerPositionFromPriority(item.getPriority()));
 		spnStatus.setSelection(item.getStatus().equals(TodoItem.Status.OPEN) ? 0 : 1);
 	}
 
@@ -154,14 +153,29 @@ public class ItemFormActivity extends AbstractActivity
 		txtTime = (TextView) findViewById(R.id.txtTime);
 		txtLatitude = (TextView) findViewById(R.id.txtLatitude);
 		txtLongitude = (TextView) findViewById(R.id.txtLongitude);
-		chkIsFavourite = (CheckBox) findViewById(R.id.chk_isFavourite);
+		
+		spnPriority = (Spinner) findViewById(R.id.spn_priority);
+		spnPriority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+				String item = parent.getAdapter().getItem(position).toString();
+				Log.d(TAG, "Priority item selected: " + item);
+				itemModel.setPriority(TodoItem.getPriorityFromString(item));
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+		
 		spnStatus = (Spinner) findViewById(R.id.spn_status);
 		spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
 				String item = parent.getAdapter().getItem(position).toString();
-				Log.d(TAG, "Spinner item selected: " + item);
+				Log.d(TAG, "Status item selected: " + item);
 				itemModel.setStatus(TodoItem.getStatusFromString(item));
 			}
 
@@ -210,7 +224,7 @@ public class ItemFormActivity extends AbstractActivity
 			c.set(Calendar.HOUR_OF_DAY, selectedHour);
 			c.set(Calendar.MINUTE, selectedMinute);
 			itemModel.setDueDate(c.getTimeInMillis());
-			txtTime.setText(DateHelper.getDateString(c.getTimeInMillis()));
+			txtTime.setText(DateHelper.getTimeString(c.getTimeInMillis()));
 		}
 	};
 
@@ -232,7 +246,6 @@ public class ItemFormActivity extends AbstractActivity
 		if (null == saveTask) {
 			itemModel.setTitle(txtTitle.getText().toString());
 			itemModel.setDescription(txtDescription.getText().toString());
-			itemModel.setFavourite(chkIsFavourite.isChecked());
 			saveTask = new SaveItemTask(this, getString(R.string.progress_save_item));
 			saveTask.execute(itemModel);
 		}
@@ -263,7 +276,7 @@ public class ItemFormActivity extends AbstractActivity
 			values.put(TodoItemDescriptor.SERVERID_COLUMN, Math.round(Math.random() * 1000));
 			values.put(TodoItemDescriptor.TITLE_COLUMN, item.getTitle());
 			values.put(TodoItemDescriptor.DESCRIPTION_COLUMN, item.getDescription());
-			values.put(TodoItemDescriptor.ISFAVOURITE_COLUMN, item.isFavourite());
+			values.put(TodoItemDescriptor.PRIORITY_COLUMN, item.getPriority().toString());
 			values.put(TodoItemDescriptor.STATUS_COLUMN, item.getStatus().toString());
 			values.put(TodoItemDescriptor.DUEDATE_COLUMN, item.getDueDate());
 			values.put(TodoItemDescriptor.LATITUDE_COLUMN, 13.1111111);

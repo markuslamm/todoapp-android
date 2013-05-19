@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.provider.TodoItemDescriptor;
@@ -32,7 +31,7 @@ public class ItemDetailActivity extends AbstractActivity
 	private TextView txtTime;
 
 	private TextView txtStatus;
-	private CheckBox chkIsFavourite;
+	private TextView txtPriority;
 
 	private Uri itemUri;
 
@@ -48,8 +47,7 @@ public class ItemDetailActivity extends AbstractActivity
 		txtDate = (TextView) findViewById(R.id.txtDueDate);
 		txtTime = (TextView) findViewById(R.id.txtTime);
 		txtStatus = (TextView) findViewById(R.id.txtStatus);
-		chkIsFavourite = (CheckBox) findViewById(R.id.chk_isFavourite);
-		chkIsFavourite.setEnabled(false);
+		txtPriority = (TextView) findViewById(R.id.txtPriority);
 
 		final Bundle extras = getIntent().getExtras();
 		if (extras != null && extras.containsKey(TodoItemDescriptor.MIME_ITEM)) {
@@ -81,8 +79,7 @@ public class ItemDetailActivity extends AbstractActivity
 			txtDate.setText(DateHelper.getDateString(dateInMillis));
 			txtTime.setText(DateHelper.getTimeString(dateInMillis));
 			txtStatus.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN)));
-			final int isFavourite = cursor.getInt(cursor.getColumnIndex(TodoItemDescriptor.ISFAVOURITE_COLUMN));
-			chkIsFavourite.setChecked((isFavourite == 0) ? Boolean.FALSE : Boolean.TRUE);
+			txtPriority.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.PRIORITY_COLUMN)));
 			cursor.close();
 		}
 	}

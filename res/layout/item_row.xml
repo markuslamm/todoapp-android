@@ -45,13 +45,13 @@
     
      <!-- Rightend Duration -->
     <TextView
-        android:id="@+id/importance"
+        android:id="@+id/txtPriority"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignTop="@id/dueDateTime"
         android:gravity="right"
-        android:text="FAVOURITE"
+        android:text="PRIORITY"
         android:layout_marginRight="35dip"
         android:textSize="10dip"
         android:textColor="#10bcc9"

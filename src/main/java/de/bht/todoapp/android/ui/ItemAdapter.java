@@ -43,14 +43,15 @@ public class ItemAdapter extends CursorAdapter
 		final TextView txtTitle = (TextView) view.findViewById(R.id.title);
 		final TextView txtDueDate = (TextView) view.findViewById(R.id.dueDateTime);
 		final TextView txtStatus = (TextView) view.findViewById(R.id.status);
-		final TextView txtIsFavourite = (TextView) view.findViewById(R.id.importance);
+		final TextView txtPriority = (TextView) view.findViewById(R.id.txtPriority);
+		
 		txtTitle.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.TITLE_COLUMN)));
 		final Long dateInMillis = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN));
 		txtDueDate.setText(generateDateTime(dateInMillis));
 		final String status = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN));
 		txtStatus.setText(status);
-		final int isFavourite = cursor.getInt(cursor.getColumnIndex(TodoItemDescriptor.ISFAVOURITE_COLUMN));
-		txtIsFavourite.setText((isFavourite == 0 ? "" : "isFavourite"));
+		final String priority = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.PRIORITY_COLUMN));
+		txtPriority.setText(priority);
 	}
 
 	/*

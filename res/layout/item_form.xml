@@ -54,13 +54,6 @@
             android:onClick="onClickSelectDate"
             android:text="@string/label_select_date" />
 
-        <CheckBox
-            android:id="@+id/chk_isFavourite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/btnSelectTime"
-            android:text="is favourite?" />
-
         <TextView
             android:id="@+id/txtLocation"
             android:layout_width="wrap_content"
@@ -125,10 +118,17 @@
             android:text="@string/label_save_item" />
 
         <Spinner
+            android:id="@+id/spn_priority"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btnSelectTime"
+            android:entries="@array/array_priority" />
+
+        <Spinner
             android:id="@+id/spn_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/chk_isFavourite"
+            android:layout_below="@id/spn_priority"
             android:entries="@array/array_status" />
 
         <TextView

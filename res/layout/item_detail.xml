@@ -42,12 +42,19 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/txtDueDate"
             android:textAppearance="?android:attr/textAppearanceSmall" />
+        
+        <TextView
+            android:id="@+id/txtPriority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txtTime"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/txtStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/txtTime"
+            android:layout_below="@id/txtPriority"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
@@ -64,25 +71,12 @@
             android:layout_below="@id/txtLatitude"
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
-        <TextView
-            android:id="@+id/labelIsFavourite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtLongitude"
-            android:text="@string/label_isFavourite"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        <CheckBox
-            android:id="@+id/chk_isFavourite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/labelIsFavourite" />
 
         <Button
             android:id="@+id/btnEditItem"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/chk_isFavourite"
+            android:layout_below="@id/txtLongitude"
             android:onClick="onClickEditItem"
             android:text="@string/label_edit_item" />
 

@@ -82,8 +82,8 @@ public class MainApplication extends Application
 			value.put(TodoItemDescriptor.TITLE_COLUMN, i + TodoItemDescriptor.TITLE_COLUMN);
 			value.put(TodoItemDescriptor.DESCRIPTION_COLUMN, i + TodoItemDescriptor.DESCRIPTION_COLUMN);
 			final String status = (i % 2 == 0) ? TodoItem.Status.OPEN.toString() : TodoItem.Status.CLOSED.toString();
-			final boolean isFavourite = ((i % 2 == 0) ? Boolean.FALSE : Boolean.TRUE);
-			value.put(TodoItemDescriptor.ISFAVOURITE_COLUMN, isFavourite);
+			final String priority = ((i % 2 == 0) ? TodoItem.Priority.HIGH.toString() : TodoItem.Priority.LOW.toString());
+			value.put(TodoItemDescriptor.PRIORITY_COLUMN, priority);
 			value.put(TodoItemDescriptor.STATUS_COLUMN, status);
 			value.put(TodoItemDescriptor.DUEDATE_COLUMN, Calendar.getInstance().getTimeInMillis());
 			value.put(TodoItemDescriptor.LATITUDE_COLUMN, 48.4532453 + 0.01);

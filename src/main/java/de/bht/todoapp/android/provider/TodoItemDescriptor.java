@@ -24,7 +24,7 @@ public class TodoItemDescriptor
  	public static final String TITLE_COLUMN = "title"; 
  	public static final String DESCRIPTION_COLUMN = "description";
  	public static final String STATUS_COLUMN = "status";
- 	public static final String ISFAVOURITE_COLUMN = "is_favourite";
+ 	public static final String PRIORITY_COLUMN = "priority";
  	public static final String DUEDATE_COLUMN = "dueDate";
  	public static final String LATITUDE_COLUMN = "latitude";
  	public static final String LONGITUDE_COLUMN = "longitude";

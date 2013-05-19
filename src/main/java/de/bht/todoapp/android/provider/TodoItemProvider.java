@@ -44,7 +44,7 @@ public class TodoItemProvider extends ContentProvider
 		TodoItemProvider.PROJECTION_MAP.put(TodoItemDescriptor.TITLE_COLUMN, TodoItemDescriptor.TITLE_COLUMN);
 		TodoItemProvider.PROJECTION_MAP.put(TodoItemDescriptor.DESCRIPTION_COLUMN, TodoItemDescriptor.DESCRIPTION_COLUMN);
 		TodoItemProvider.PROJECTION_MAP.put(TodoItemDescriptor.STATUS_COLUMN, TodoItemDescriptor.STATUS_COLUMN);
-		TodoItemProvider.PROJECTION_MAP.put(TodoItemDescriptor.ISFAVOURITE_COLUMN, TodoItemDescriptor.ISFAVOURITE_COLUMN);
+		TodoItemProvider.PROJECTION_MAP.put(TodoItemDescriptor.PRIORITY_COLUMN, TodoItemDescriptor.PRIORITY_COLUMN);
 		TodoItemProvider.PROJECTION_MAP.put(TodoItemDescriptor.DUEDATE_COLUMN, TodoItemDescriptor.DUEDATE_COLUMN);
 		TodoItemProvider.PROJECTION_MAP.put(TodoItemDescriptor.LATITUDE_COLUMN, TodoItemDescriptor.LATITUDE_COLUMN);
 		TodoItemProvider.PROJECTION_MAP.put(TodoItemDescriptor.LONGITUDE_COLUMN, TodoItemDescriptor.LONGITUDE_COLUMN);
@@ -204,7 +204,7 @@ public class TodoItemProvider extends ContentProvider
 					TodoItemDescriptor.TITLE_COLUMN + " TEXT NOT NULL," +
 					TodoItemDescriptor.DESCRIPTION_COLUMN + " TEXT," + 
 					TodoItemDescriptor.STATUS_COLUMN + " TEXT NOT NULL," +
-					TodoItemDescriptor.ISFAVOURITE_COLUMN + " INTEGER NOT NULL," +
+					TodoItemDescriptor.PRIORITY_COLUMN + " TEXT NOT NULL," +
 					TodoItemDescriptor.DUEDATE_COLUMN + " INTEGER," + 
 					TodoItemDescriptor.LATITUDE_COLUMN + " REAL," +
 					TodoItemDescriptor.LONGITUDE_COLUMN + " REAL);";

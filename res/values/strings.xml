@@ -44,5 +44,11 @@
         <item>OPEN</item>
         <item>CLOSED</item>
     </string-array>
+    
+    <string-array name="array_priority">
+        <item>HIGH</item>
+        <item>MEDIUM</item>
+        <item>LOW</item>
+    </string-array>
 
 </resources>

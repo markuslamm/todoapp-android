@@ -47,7 +47,8 @@ public class ItemAdapter extends CursorAdapter
 		txtTitle.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.TITLE_COLUMN)));
 		final Long dateInMillis = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN));
 		txtDueDate.setText(generateDateTime(dateInMillis));
-		txtStatus.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN)));
+		final String status = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN));
+		txtStatus.setText(status);
 		final int isFavourite = cursor.getInt(cursor.getColumnIndex(TodoItemDescriptor.ISFAVOURITE_COLUMN));
 		txtIsFavourite.setText((isFavourite == 0 ? "" : "isFavourite"));
 	}

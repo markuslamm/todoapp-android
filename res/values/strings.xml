@@ -41,8 +41,8 @@
     <string name="progress_save_item">saving item</string>
     
     <string-array name="array_status">
-        <item>open</item>
-        <item>closed</item>
+        <item>OPEN</item>
+        <item>CLOSED</item>
     </string-array>
 
 </resources>

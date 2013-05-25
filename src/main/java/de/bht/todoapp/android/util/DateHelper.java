@@ -18,7 +18,9 @@ public class DateHelper
 {
 	private static final String FORMAT_DATE = "dd.MM.yyyy";
 	private static final String FORMAT_TIME = "HH:mm";
-	private final static Locale LOCALE = Locale.GERMANY;
+	private static final Locale LOCALE = Locale.GERMANY;
+	
+	private DateHelper() { }
 	/**
 	 * @param dateInMillis
 	 * @return
@@ -37,6 +39,16 @@ public class DateHelper
 		final DateFormat f = new SimpleDateFormat(FORMAT_TIME, LOCALE);
 		f.setTimeZone(TimeZone.getDefault());
 		return f.format(c.getTime());
+	}
+	
+	/**
+	 * @param dateInMillis
+	 * @return
+	 */
+	public static String generateDateTimeString(final Long dateInMillis) {
+		final String date = DateHelper.getDateString(dateInMillis);
+		final String time = DateHelper.getTimeString(dateInMillis);
+		return new StringBuffer(date).append(" | ").append(time).toString();
 	}
 	
 	

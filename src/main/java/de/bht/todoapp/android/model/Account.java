@@ -102,6 +102,6 @@ public class Account extends BaseEntity
      */
     @Override
     public String toString() {
-        return String.format("Account [entityId=%d, email=%s, password=%s]", getEmail(), getPassword());
+        return String.format("Account [entityId=%d, email=%s, password=%s]", getEntityId(), getEmail(), getPassword());
     }
 }

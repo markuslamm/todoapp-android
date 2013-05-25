@@ -3,20 +3,6 @@
  */
 package de.bht.todoapp.android.ui;
 
-import java.util.Collections;
-
-import org.springframework.http.HttpAuthentication;
-import org.springframework.http.HttpBasicAuthentication;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonHttpMessageConverter;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +12,7 @@ import android.widget.EditText;
 import de.bht.todoapp.android.AuthenticationException;
 import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.model.Account;
+import de.bht.todoapp.android.rest.AuthenticationRestClient;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
 import de.bht.todoapp.android.ui.base.BaseActivity;
@@ -88,8 +75,6 @@ public class LoginActivity extends AbstractActivity
 
 	private class AuthenticationTask extends AbstractAsyncTask<String, Void, Account>
 	{
-		private Account authenticatedUser = null;
-
 		/**
 		 * @param activity
 		 * @param message
@@ -108,61 +93,48 @@ public class LoginActivity extends AbstractActivity
 		protected Account doInBackground(String... params) {
 			final String email = params[0];
 			final String password = params[1];
+			Account authenticatedUser = null;
 			try {
 				authenticatedUser = performAuthentication(email, password);
 			}
 			catch (AuthenticationException e) {
 				Log.d(TAG, e.getMessage());
-				return null;
 			}
 			return authenticatedUser;
 		}
 
-		private Account performAuthentication(final String user, final String password) throws AuthenticationException {
+		private Account performAuthentication(final String email, final String password) throws AuthenticationException {
 			Log.d(TAG, "performAuthentication()...");
-			boolean authenticated = Boolean.FALSE;
-			// try {
-			// Thread.sleep(500);
-			// }
-			// catch (InterruptedException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// TODO
-			// Populate the HTTP Basic Authentitcation header with the username
-			// and password
-			// authenticated = (user.equals("111@web.de") &&
-			// password.equals("111111")) ? Boolean.TRUE : Boolean.FALSE;
-			// if(!authenticated) {
-			// throw new
-			// AuthenticationException(String.format("Authentication failed! [%s] [%s]",
-			// user, password));
-			// }
-
-			HttpAuthentication authHeader = new HttpBasicAuthentication(user, password);
-
-			HttpHeaders requestHeaders = new HttpHeaders();
-			requestHeaders.setAuthorization(authHeader);
-			requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-			HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
-
-			// Create a new RestTemplate instance
-			RestTemplate restTemplate = new RestTemplate();
-			restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
-			Log.d(TAG, "Trying to authenticate with " + user + ":" + password);
-			try {
-				// Make the network request
-				ResponseEntity<Account> response = restTemplate.exchange("http://10.0.2.2:8080/todoapp-server/authenticate/",
-						HttpMethod.GET, requestEntity, Account.class);
-				if (response.getStatusCode() == HttpStatus.OK) {
-					final Account accountData = response.getBody();
-					Log.d(TAG, "Response body: " + accountData);
-				}
-			}
-			catch (HttpClientErrorException e) {
-				Log.d(TAG, "Unable to authenticate");
-				throw new AuthenticationException("Unable to authenticate");
-			}
+			Account authenticatedUser = null;
+			final AuthenticationRestClient client = new AuthenticationRestClient(email, password);
+			authenticatedUser = client.authenticateUser();
+			Log.d(TAG, "Account from client: " + authenticatedUser.toString());
+			
+//			HttpAuthentication authHeader = new HttpBasicAuthentication(user, password);
+//
+//			HttpHeaders requestHeaders = new HttpHeaders();
+//			requestHeaders.setAuthorization(authHeader);
+//			requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+//			HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
+//
+//			// Create a new RestTemplate instance
+//			RestTemplate restTemplate = new RestTemplate();
+//			restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
+//			Log.d(TAG, "Trying to authenticate with " + user + ":" + password);
+//			Account authenticatedUser = null;
+//			try {
+//				// Make the network request
+//				ResponseEntity<Account> response = restTemplate.exchange("http://10.0.2.2:8080/todoapp-server/authenticate/",
+//						HttpMethod.GET, requestEntity, Account.class);
+//				if (response.getStatusCode() == HttpStatus.OK) {
+//					authenticatedUser = response.getBody();
+//					Log.d(TAG, "Response body: " + authenticatedUser);
+//				}
+//			}
+//			catch (HttpClientErrorException e) {
+//				Log.d(TAG, "Unable to authenticate");
+//				throw new AuthenticationException("Unable to authenticate");
+//			}
 			return authenticatedUser;
 		}
 

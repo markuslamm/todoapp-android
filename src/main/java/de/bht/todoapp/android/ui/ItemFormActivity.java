@@ -52,12 +52,12 @@ public class ItemFormActivity extends AbstractActivity
 
 	private Spinner spnPriority;
 	private Spinner spnStatus;
+	
+	private static final int DATE_DIALOG_ID = 10;
+	private static final int TIME_DIALOG_ID = 20;
 
 	private Uri itemUri = null;
 	private TodoItem itemModel = null;
-
-	private static final int DATE_DIALOG_ID = 10;
-	private static final int TIME_DIALOG_ID = 20;
 
 	private SaveItemTask saveTask = null;
 
@@ -110,7 +110,7 @@ public class ItemFormActivity extends AbstractActivity
 				cursor.close();
 
 				item.setInternalId(internalId);
-				item.setRemoteId(remoteId);
+				item.setEntityId(remoteId);
 				item.setTitle(title);
 				item.setDescription(description);
 				item.setLatitude(latitude);

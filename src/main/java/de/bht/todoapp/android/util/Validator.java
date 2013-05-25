@@ -17,6 +17,8 @@ import android.util.Patterns;
  */
 public class Validator
 {
+	
+	private Validator() { }
     /**
      * @param password
      * @return
@@ -40,7 +42,7 @@ public class Validator
      * @param emailString
      * @return
      */
-    public static final boolean isValidEmail(final String emailString) {
-        return (emailString == null) ? false : Patterns.EMAIL_ADDRESS.matcher(emailString).matches();
+    public static final boolean isValidEmail(final String email) {
+        return (email.trim() == null) ? false : Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }

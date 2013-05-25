@@ -10,7 +10,7 @@ package de.bht.todoapp.android.model;
 public abstract class BaseEntity
 {
 	private Long internalId;
-	private Long remoteId;
+	private Long entityId;
 
 
 	/**
@@ -30,15 +30,15 @@ public abstract class BaseEntity
 	/**
 	 * @return the remoteId
 	 */
-	public Long getRemoteId() {
-		return remoteId;
+	public Long getEntityId() {
+		return entityId;
 	}
 
 	/**
 	 * @param remoteId the remoteId to set
 	 */
-	public void setRemoteId(Long remoteId) {
-		this.remoteId = remoteId;
+	public void setEntityId(Long remoteId) {
+		this.entityId = remoteId;
 	}
 
 	/* (non-Javadoc)
@@ -49,7 +49,7 @@ public abstract class BaseEntity
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((internalId == null) ? 0 : internalId.hashCode());
-		result = prime * result + ((remoteId == null) ? 0 : remoteId.hashCode());
+		result = prime * result + ((entityId == null) ? 0 : entityId.hashCode());
 		return result;
 	}
 
@@ -71,11 +71,11 @@ public abstract class BaseEntity
 		}
 		else if (!internalId.equals(other.internalId))
 			return false;
-		if (remoteId == null) {
-			if (other.remoteId != null)
+		if (entityId == null) {
+			if (other.entityId != null)
 				return false;
 		}
-		else if (!remoteId.equals(other.remoteId))
+		else if (!entityId.equals(other.entityId))
 			return false;
 		return true;
 	}

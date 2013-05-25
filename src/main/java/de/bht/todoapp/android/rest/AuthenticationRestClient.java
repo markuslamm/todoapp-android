@@ -27,10 +27,6 @@ import de.bht.todoapp.android.model.Account;
 public class AuthenticationRestClient extends AbstractRestClient<Account>
 {
 	private static final String TAG = AuthenticationRestClient.class.getSimpleName();
-	private String email;
-	private String password;
-
-	// private static final String AUTHENTICATION_URI = "/authenticate";
 
 	public AuthenticationRestClient(final String email, final String password)
 	{
@@ -47,15 +43,15 @@ public class AuthenticationRestClient extends AbstractRestClient<Account>
 		return authenticationURI;
 	}
 
-	public Account authenticateUser(final String email, final String password) throws AuthenticationException {
-		HttpAuthentication authHeader = new HttpBasicAuthentication(email, password);
+	public Account authenticateUser() throws AuthenticationException {
+		HttpAuthentication authHeader = new HttpBasicAuthentication(getEmail(), getPassword());
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.setAuthorization(authHeader);
 		requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 		HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
 		// Create a new RestTemplate instance
 		RestTemplate restTemplate = getRestTemplate();
-		Log.d(TAG, "Trying to authenticate with " + email + ":" + password);
+		Log.d(TAG, "Trying to authenticate with " + getEmail() + ":" + getPassword());
 		ResponseEntity<Account> response = null;
 		// Make the network request
 		try {

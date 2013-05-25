@@ -47,7 +47,7 @@ public class ItemAdapter extends CursorAdapter
 		
 		txtTitle.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.TITLE_COLUMN)));
 		final Long dateInMillis = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN));
-		txtDueDate.setText(generateDateTime(dateInMillis));
+		txtDueDate.setText(DateHelper.generateDateTimeString(dateInMillis));
 		final String status = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN));
 		txtStatus.setText(status);
 		final String priority = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.PRIORITY_COLUMN));
@@ -66,13 +66,5 @@ public class ItemAdapter extends CursorAdapter
 		return view;
 	}
 	
-	/**
-	 * @param dateInMillis
-	 * @return
-	 */
-	private String generateDateTime(final Long dateInMillis) {
-		final String date = DateHelper.getDateString(dateInMillis);
-		final String time = DateHelper.getTimeString(dateInMillis);
-		return new StringBuffer(date).append(" | ").append(time).toString();
-	}
+	
 }

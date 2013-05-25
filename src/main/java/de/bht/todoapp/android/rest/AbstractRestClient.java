@@ -25,7 +25,9 @@ public abstract class AbstractRestClient<T>
 	private RestTemplate restTemplate;
 	private Class<T> clazz;
 
-	protected String serverRoot = "http://10.0.2.2:8080";
+//	protected String serverRoot = "http://10.0.2.2:8080";
+	protected String serverRoot = "http://192.168.2.100:8080";
+
 	protected String applicationPath = "/todoapp-server";
 	protected String authenticationURI = "/authenticate";
 	private static final String PATH_SEPARATOR = "/";
@@ -88,7 +90,7 @@ public abstract class AbstractRestClient<T>
 	}
 
 	protected String getAuthenticationURI() {
-		return getContextPath() + authenticationURI;
+		return getContextPath() + authenticationURI + PATH_SEPARATOR;
 	}
 
 	/**

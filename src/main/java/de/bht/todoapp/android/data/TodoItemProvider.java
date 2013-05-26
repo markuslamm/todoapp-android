@@ -1,15 +1,11 @@
 /**
- * Project: 	todoapp
- * Package:		de.bht.todoapp.provider
- * Filename:	TodoProvider.java
- * Timestamp:	23.10.2012 | 12:56:16
+ * 
  */
 package de.bht.todoapp.android.data;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -22,24 +18,25 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
+import de.bht.todoapp.android.data.rest.RestResponseHandler;
+import de.bht.todoapp.android.data.rest.TodoItemHandler;
 
 /**
- * @author Markus Lamm
- *
+ * @author markus
+ * 
  */
-public class TodoItemProvider extends ContentProvider
+public class TodoItemProvider extends AbstractRestContentProvider
 {
 	private static final String TAG = TodoItemProvider.class.getSimpleName();
-	
+
 	private TodoItemDBHelper dbHelper;
 	private SQLiteDatabase db;
 
 	private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 	private static final Map<String, String> PROJECTION_MAP = new HashMap<String, String>();
-	
-	
+
 	private boolean istNetworkAvailable = true;
-	
+
 	static {
 		TodoItemProvider.URI_MATCHER.addURI(TodoItemDescriptor.AUTHORITY, TodoItemDescriptor.PATH_MULTIPLE, TodoItemDescriptor.ITEMS_CODE);
 		TodoItemProvider.URI_MATCHER.addURI(TodoItemDescriptor.AUTHORITY, TodoItemDescriptor.PATH_SINGLE, TodoItemDescriptor.ITEM_CODE);
@@ -53,55 +50,24 @@ public class TodoItemProvider extends ContentProvider
 		TodoItemProvider.PROJECTION_MAP.put(TodoItemDescriptor.LONGITUDE_COLUMN, TodoItemDescriptor.LONGITUDE_COLUMN);
 	}
 
-    /* (non-Javadoc)
-     * @see android.content.ContentProvider#delete(android.net.Uri, java.lang.String, java.lang.String[])
-     */
-    @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-    	int count = 0;
-		switch (TodoItemProvider.URI_MATCHER.match(uri)) {
-			case TodoItemDescriptor.ITEMS_CODE:
-				count = db.delete(TodoItemDescriptor.TABLE_NAME, selection, selectionArgs);
-				break;
-			case TodoItemDescriptor.ITEM_CODE:
-				final String itemId = uri.getPathSegments().get(1);
-				if (TextUtils.isEmpty(selection)) {
-					count = db.delete(TodoItemDescriptor.TABLE_NAME, TodoItemDescriptor.ID_COLUMN + "=" + itemId, null);
-				}
-				else {
-					count = db.delete(TodoItemDescriptor.TABLE_NAME, TodoItemDescriptor.ID_COLUMN + "=" + itemId + " and " + selection,
-							selectionArgs);
-				}
-				break;
-			default:
-				throw new IllegalArgumentException("Unknown URI: " + uri);
+	
 
-		}
-		getContext().getContentResolver().notifyChange(uri, null);
-		return count;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.content.ContentProvider#onCreate()
+	 */
+	@Override
+	public boolean onCreate() {
+		Log.d(TAG, "onCreate()...");
+		final TodoItemDBHelper dbHelper = new TodoItemDBHelper(getContext());
+		db = dbHelper.getWritableDatabase();
+		return db == null ? false : true;
+	}
 
-    /* (non-Javadoc)
-     * @see android.content.ContentProvider#getType(android.net.Uri)
-     */
-    @Override
-    public String getType(Uri uri) {
-    	switch (TodoItemProvider.URI_MATCHER.match(uri)) {
-			case TodoItemDescriptor.ITEMS_CODE:
-				return TodoItemDescriptor.MIME_TYPE_MULTIPLE;
-			case TodoItemDescriptor.ITEM_CODE:
-				return TodoItemDescriptor.MIME_TYPE_SINGLE;
-			default:
-				throw new IllegalArgumentException("Unknown type: " + uri);
-		}
-    }
-
-    /* (non-Javadoc)
-     * @see android.content.ContentProvider#insert(android.net.Uri, android.content.ContentValues)
-     */
-    @Override
-    public Uri insert(Uri uri, ContentValues initialValues) {
-    	if (TodoItemProvider.URI_MATCHER.match(uri) != TodoItemDescriptor.ITEMS_CODE) {
+	@Override
+	public Uri insert(Uri uri, ContentValues initialValues) {
+		if (TodoItemProvider.URI_MATCHER.match(uri) != TodoItemDescriptor.ITEMS_CODE) {
 			throw new IllegalArgumentException("Unknown URI: " + uri);
 		}
 		ContentValues values;
@@ -119,20 +85,9 @@ public class TodoItemProvider extends ContentProvider
 			return result;
 		}
 		throw new SQLiteException("Unable to insert row into " + uri);
-    }
-
-    /* (non-Javadoc)
-     * @see android.content.ContentProvider#onCreate()
-     */
-    @Override
-    public boolean onCreate() {
-    	Log.d(TAG, "onCreate()...");
-		final TodoItemDBHelper dbHelper = new TodoItemDBHelper(getContext());
-		db = dbHelper.getWritableDatabase();
-		return db == null ? false : true;
-    }
-
-    /* (non-Javadoc)
+	}
+	
+	 /* (non-Javadoc)
      * @see android.content.ContentProvider#query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
      */
     @Override
@@ -188,29 +143,93 @@ public class TodoItemProvider extends ContentProvider
 		getContext().getContentResolver().notifyChange(uri, null);
 		return count;
     }
-    
-    
-    
-    private static class TodoItemDBHelper extends SQLiteOpenHelper
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.content.ContentProvider#delete(android.net.Uri,
+	 * java.lang.String, java.lang.String[])
+	 */
+	@Override
+	public int delete(Uri uri, String selection, String[] selectionArgs) {
+		int count = 0;
+		switch (TodoItemProvider.URI_MATCHER.match(uri)) {
+			case TodoItemDescriptor.ITEMS_CODE:
+				count = db.delete(TodoItemDescriptor.TABLE_NAME, selection, selectionArgs);
+				break;
+			case TodoItemDescriptor.ITEM_CODE:
+				final String itemId = uri.getPathSegments().get(1);
+				if (TextUtils.isEmpty(selection)) {
+					count = db.delete(TodoItemDescriptor.TABLE_NAME, TodoItemDescriptor.ID_COLUMN + "=" + itemId, null);
+				}
+				else {
+					count = db.delete(TodoItemDescriptor.TABLE_NAME, TodoItemDescriptor.ID_COLUMN + "=" + itemId + " and " + selection,
+							selectionArgs);
+				}
+				break;
+			default:
+				throw new IllegalArgumentException("Unknown URI: " + uri);
+		}
+		getContext().getContentResolver().notifyChange(uri, null);
+		return count;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.content.ContentProvider#getType(android.net.Uri)
+	 */
+	@Override
+	public String getType(Uri uri) {
+		switch (TodoItemProvider.URI_MATCHER.match(uri)) {
+			case TodoItemDescriptor.ITEMS_CODE:
+				return TodoItemDescriptor.MIME_TYPE_MULTIPLE;
+			case TodoItemDescriptor.ITEM_CODE:
+				return TodoItemDescriptor.MIME_TYPE_SINGLE;
+			default:
+				throw new IllegalArgumentException("Unknown type: " + uri);
+		}
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.bht.todoapp.android.data.AbstractRestContentProvider#getDatabase()
+	 */
+	@Override
+	protected SQLiteDatabase getDatabase() {
+		return db;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.bht.todoapp.android.data.AbstractRestContentProvider#newResponseHandler
+	 * ()
+	 */
+	@Override
+	protected RestResponseHandler newResponseHandler() {
+		return new TodoItemHandler(this);
+	}
+
+	private static class TodoItemDBHelper extends SQLiteOpenHelper
 	{
 		private static final String TAG = TodoItemDBHelper.class.getSimpleName();
 
-		public TodoItemDBHelper(Context context) {
+		public TodoItemDBHelper(Context context)
+		{
 			super(context, TodoItemDescriptor.DB_NAME, null, TodoItemDescriptor.DB_VERSION);
 		}
 
 		private void createTable(SQLiteDatabase db) {
-			final String stmt = "CREATE TABLE " +
-					TodoItemDescriptor.TABLE_NAME + " (" +
-					TodoItemDescriptor.ID_COLUMN + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-					TodoItemDescriptor.SERVERID_COLUMN + " INTEGER," +
-					TodoItemDescriptor.TITLE_COLUMN + " TEXT NOT NULL," +
-					TodoItemDescriptor.DESCRIPTION_COLUMN + " TEXT," + 
-					TodoItemDescriptor.STATUS_COLUMN + " TEXT NOT NULL," +
-					TodoItemDescriptor.PRIORITY_COLUMN + " TEXT NOT NULL," +
-					TodoItemDescriptor.DUEDATE_COLUMN + " INTEGER," + 
-					TodoItemDescriptor.LATITUDE_COLUMN + " REAL," +
-					TodoItemDescriptor.LONGITUDE_COLUMN + " REAL);";
+			final String stmt = "CREATE TABLE " + TodoItemDescriptor.TABLE_NAME + " (" + TodoItemDescriptor.ID_COLUMN
+					+ " INTEGER PRIMARY KEY AUTOINCREMENT," + TodoItemDescriptor.SERVERID_COLUMN + " INTEGER,"
+					+ TodoItemDescriptor.TITLE_COLUMN + " TEXT NOT NULL," + TodoItemDescriptor.DESCRIPTION_COLUMN + " TEXT,"
+					+ TodoItemDescriptor.STATUS_COLUMN + " TEXT NOT NULL," + TodoItemDescriptor.PRIORITY_COLUMN + " TEXT NOT NULL,"
+					+ TodoItemDescriptor.DUEDATE_COLUMN + " INTEGER," + TodoItemDescriptor.LATITUDE_COLUMN + " REAL,"
+					+ TodoItemDescriptor.LONGITUDE_COLUMN + " REAL);";
 			db.execSQL(stmt);
 		}
 

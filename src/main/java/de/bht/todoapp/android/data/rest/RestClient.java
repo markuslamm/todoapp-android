@@ -111,7 +111,7 @@ public class RestClient
 	
 	
 	protected HttpEntity<Object> getAuthorizedGetRequestEntity() {
-		HttpAuthentication authHeader = new HttpBasicAuthentication("111@web.de", "111111");
+		HttpAuthentication authHeader = new HttpBasicAuthentication(email, password);
 		HttpHeaders requestHeaders = new HttpHeaders();
 		requestHeaders.setAuthorization(authHeader);
 		requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));

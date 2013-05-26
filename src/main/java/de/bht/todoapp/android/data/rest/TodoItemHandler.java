@@ -6,6 +6,7 @@ package de.bht.todoapp.android.data.rest;
 import org.springframework.http.ResponseEntity;
 
 import android.util.Log;
+import de.bht.todoapp.android.data.AbstractRestContentProvider;
 import de.bht.todoapp.android.model.TodoItem;
 
 /**
@@ -15,6 +16,13 @@ import de.bht.todoapp.android.model.TodoItem;
 public class TodoItemHandler implements RestResponseHandler
 {
 	private static final String TAG = TodoItemHandler.class.getSimpleName();
+	
+	private final AbstractRestContentProvider provider;
+	
+	public TodoItemHandler(AbstractRestContentProvider provider)
+	{
+		this.provider = provider;
+	}
 
 	/* (non-Javadoc)
 	 * @see de.bht.todoapp.android.data.rest.RestResponseHandler#handleResponse(org.springframework.http.ResponseEntity)

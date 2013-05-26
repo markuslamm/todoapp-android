@@ -124,8 +124,6 @@ public class LoginActivity extends AbstractActivity
 		protected void onPostExecute(final Account result) {
 			super.onPostExecute(result);
 			authenticationTask = null;
-			//final Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
-			//startActivity(intent);
 			if (result != null) { // Successfully authenticated
 				final Editor edit = getMainApplication().getPreferences().edit();
 				edit.putLong("accountId", result.getEntityId());

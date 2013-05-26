@@ -66,4 +66,5 @@ public abstract class AbstractAsyncTask<Params, Progress, Result> extends AsyncT
     protected void onCancelled() {
         activity.dismissProgressDialog();
     }
+    
 }

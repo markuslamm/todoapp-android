@@ -8,10 +8,15 @@ import java.util.Calendar;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -26,8 +31,11 @@ public class MainApplication extends Application
 {
 	private static final String TAG = MainApplication.class.getSimpleName();
 	private final static boolean CREATE_DATA = false;
-	
+
 	private SharedPreferences prefs;
+	private NetworkChangeReceiver networkReceiver;
+
+	private boolean networkConnectionAvailable = false;
 
 	/*
 	 * (non-Javadoc)
@@ -36,15 +44,17 @@ public class MainApplication extends Application
 	 */
 	@Override
 	public void onCreate() {
-		
+		super.onCreate();
 		Log.d(TAG, "Application onCreate()...");
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		if(CREATE_DATA) {
+		if (CREATE_DATA) {
 			storeTodoItems(5);
 		}
-		super.onCreate();
+		final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+		networkReceiver = new NetworkChangeReceiver();
+		registerReceiver(networkReceiver, filter);
 	}
-	
+
 	public SharedPreferences getPreferences() {
 		return prefs;
 	}
@@ -99,7 +109,39 @@ public class MainApplication extends Application
 			value.put(TodoItemDescriptor.LONGITUDE_COLUMN, 10.5324544 + 0.011);
 			getContentResolver().insert(TodoItemDescriptor.CONTENT_URI, value);
 		}
+	}
+	
+	public boolean hasNetworkConnection() {
+		return networkConnectionAvailable;
+	}
 
+	private class NetworkChangeReceiver extends BroadcastReceiver
+	{
+		private final String TAG = NetworkChangeReceiver.class.getSimpleName();
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * android.content.BroadcastReceiver#onReceive(android.content.Context,
+		 * android.content.Intent)
+		 */
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "Received broadcast about network status");
+			final ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+			if (conManager == null) {
+				throw new RuntimeException("ConnectivityManager not available");
+			}
+			final NetworkInfo[] networkInfos = conManager.getAllNetworkInfo();
+			for (final NetworkInfo info : networkInfos) {
+				//Log.d(TAG, "network info: " + info.toString());
+				if (info.isConnected()) {
+					Log.d(TAG, "network connected with: " + info.toString());
+					networkConnectionAvailable = true;
+				}
+			}
+		}
 	}
 
 }

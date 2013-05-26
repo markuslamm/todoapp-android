@@ -11,10 +11,12 @@ import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
+import data.TodoItemDescriptor;
 import de.bht.todoapp.android.model.TodoItem;
-import de.bht.todoapp.android.provider.TodoItemDescriptor;
 
 /**
  * @author markus
@@ -23,7 +25,9 @@ import de.bht.todoapp.android.provider.TodoItemDescriptor;
 public class MainApplication extends Application
 {
 	private static final String TAG = MainApplication.class.getSimpleName();
-	private final static boolean CREATE_DATA = true;
+	private final static boolean CREATE_DATA = false;
+	
+	private SharedPreferences prefs;
 
 	/*
 	 * (non-Javadoc)
@@ -34,10 +38,15 @@ public class MainApplication extends Application
 	public void onCreate() {
 		
 		Log.d(TAG, "Application onCreate()...");
+		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if(CREATE_DATA) {
 			storeTodoItems(5);
 		}
 		super.onCreate();
+	}
+	
+	public SharedPreferences getPreferences() {
+		return prefs;
 	}
 
 	/*

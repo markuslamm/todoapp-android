@@ -4,7 +4,7 @@
  * Filename:	TodoProvider.java
  * Timestamp:	23.10.2012 | 12:56:16
  */
-package de.bht.todoapp.android.provider;
+package data;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +36,9 @@ public class TodoItemProvider extends ContentProvider
 
 	private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 	private static final Map<String, String> PROJECTION_MAP = new HashMap<String, String>();
+	
+	
+	private boolean istNetworkAvailable = true;
 	
 	static {
 		TodoItemProvider.URI_MATCHER.addURI(TodoItemDescriptor.AUTHORITY, TodoItemDescriptor.PATH_MULTIPLE, TodoItemDescriptor.ITEMS_CODE);

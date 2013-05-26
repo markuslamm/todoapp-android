@@ -4,15 +4,16 @@
 package de.bht.todoapp.android.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import data.RestClient;
 import de.bht.todoapp.android.AuthenticationException;
 import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.model.Account;
-import de.bht.todoapp.android.rest.AuthenticationRestClient;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
 import de.bht.todoapp.android.ui.base.BaseActivity;
@@ -106,35 +107,9 @@ public class LoginActivity extends AbstractActivity
 		private Account performAuthentication(final String email, final String password) throws AuthenticationException {
 			Log.d(TAG, "performAuthentication()...");
 			Account authenticatedUser = null;
-			final AuthenticationRestClient client = new AuthenticationRestClient(email, password);
+			final RestClient client = RestClient.getInstance(email, password);
 			authenticatedUser = client.authenticateUser();
-			Log.d(TAG, "Account from client: " + authenticatedUser.toString());
-			
-//			HttpAuthentication authHeader = new HttpBasicAuthentication(user, password);
-//
-//			HttpHeaders requestHeaders = new HttpHeaders();
-//			requestHeaders.setAuthorization(authHeader);
-//			requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-//			HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
-//
-//			// Create a new RestTemplate instance
-//			RestTemplate restTemplate = new RestTemplate();
-//			restTemplate.getMessageConverters().add(new MappingJacksonHttpMessageConverter());
-//			Log.d(TAG, "Trying to authenticate with " + user + ":" + password);
-//			Account authenticatedUser = null;
-//			try {
-//				// Make the network request
-//				ResponseEntity<Account> response = restTemplate.exchange("http://10.0.2.2:8080/todoapp-server/authenticate/",
-//						HttpMethod.GET, requestEntity, Account.class);
-//				if (response.getStatusCode() == HttpStatus.OK) {
-//					authenticatedUser = response.getBody();
-//					Log.d(TAG, "Response body: " + authenticatedUser);
-//				}
-//			}
-//			catch (HttpClientErrorException e) {
-//				Log.d(TAG, "Unable to authenticate");
-//				throw new AuthenticationException("Unable to authenticate");
-//			}
+			Log.d(TAG, "Received Account data from client: " + authenticatedUser.toString());
 			return authenticatedUser;
 		}
 
@@ -149,7 +124,14 @@ public class LoginActivity extends AbstractActivity
 		protected void onPostExecute(final Account result) {
 			super.onPostExecute(result);
 			authenticationTask = null;
+			//final Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
+			//startActivity(intent);
 			if (result != null) { // Successfully authenticated
+				final Editor edit = getMainApplication().getPreferences().edit();
+				edit.putLong("accountId", result.getEntityId());
+				edit.putString("email", result.getEmail());
+				edit.putString("password", result.getPassword());
+				edit.commit();
 				final Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
 				startActivity(intent);
 				finish();

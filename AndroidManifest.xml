@@ -30,7 +30,7 @@
         <activity android:name=".ui.ItemFormActivity"></activity>
         <activity android:name=".ui.ItemDetailActivity"></activity>
         
-        <provider android:name=".provider.TodoItemProvider" android:authorities="de.bht.todoapp.provider.items"></provider>
+        <provider android:name="data.TodoItemProvider" android:authorities="de.bht.todoapp.provider.items"></provider>
     </application>
 
 </manifest>

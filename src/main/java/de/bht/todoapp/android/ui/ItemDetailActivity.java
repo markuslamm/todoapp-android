@@ -10,8 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import data.TodoItemDescriptor;
 import de.bht.todoapp.android.R;
-import de.bht.todoapp.android.provider.TodoItemDescriptor;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
 import de.bht.todoapp.android.util.DateHelper;
 

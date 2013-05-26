@@ -4,15 +4,16 @@
 package de.bht.todoapp.android.ui;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import data.RestClient;
+import data.TodoItemDescriptor;
 import de.bht.todoapp.android.R;
-import de.bht.todoapp.android.provider.TodoItemDescriptor;
+import de.bht.todoapp.android.model.TodoItemList;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
 import de.bht.todoapp.android.ui.base.AbstractListActivity;
 import de.bht.todoapp.android.ui.base.BaseActivity;
@@ -55,9 +56,9 @@ public class ItemListActivity extends AbstractListActivity
 		return true;
 	}
 	
-	private class ItemListLoaderTask extends AbstractAsyncTask<Void, Void, Cursor>
+	private class ItemListLoaderTask extends AbstractAsyncTask<Void, Void, TodoItemList>
 	{
-		private Cursor cursor = null;
+		//private Cursor cursor = null;
 
 		/**
 		 * @param activity
@@ -72,15 +73,21 @@ public class ItemListActivity extends AbstractListActivity
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
 		@Override
-		protected Cursor doInBackground(Void... params) {
-			cursor = getContentResolver().query(TodoItemDescriptor.CONTENT_URI, null, null, null, null);
-			try {
-				Thread.sleep(500);
-			}
-			catch(InterruptedException e) {
-				Log.d(TAG, e.getMessage());
-			}
-			return cursor;
+		protected TodoItemList doInBackground(Void... params) {
+			//cursor = getContentResolver().query(TodoItemDescriptor.CONTENT_URI, null, null, null, null);
+			TodoItemList response = null;
+			final String email = getMainApplication().getPreferences().getString("email", "");
+			final String password = getMainApplication().getPreferences().getString("password", "");
+			final RestClient client = RestClient.getInstance(email, password);
+			response = client.findAllItems(getMainApplication().getPreferences().getLong("accountId", -1));
+			
+//			try {
+//				Thread.sleep(500);
+//			}
+//			catch(InterruptedException e) {
+//				Log.d(TAG, e.getMessage());
+//			}
+			return response;
 		}
 		
 		@Override
@@ -90,10 +97,11 @@ public class ItemListActivity extends AbstractListActivity
 		}
 
 		@Override
-		protected void onPostExecute(Cursor cursor) {
-			super.onPostExecute(cursor);
+		protected void onPostExecute(TodoItemList list) {
+			super.onPostExecute(list);
 			final ItemListActivity activity = ItemListActivity.this;
-			setListAdapter(new ItemAdapter(activity, cursor));
+			Log.d(TAG, list.toString());
+			//setListAdapter(new ItemAdapter(activity, cursor));
 		}
 	}
 }

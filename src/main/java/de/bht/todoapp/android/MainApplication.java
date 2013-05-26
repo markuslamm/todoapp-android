@@ -15,7 +15,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
-import data.TodoItemDescriptor;
+import de.bht.todoapp.android.data.TodoItemDescriptor;
 import de.bht.todoapp.android.model.TodoItem;
 
 /**

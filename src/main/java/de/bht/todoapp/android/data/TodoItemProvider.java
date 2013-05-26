@@ -4,7 +4,7 @@
  * Filename:	TodoProvider.java
  * Timestamp:	23.10.2012 | 12:56:16
  */
-package data;
+package de.bht.todoapp.android.data;
 
 import java.util.HashMap;
 import java.util.Map;

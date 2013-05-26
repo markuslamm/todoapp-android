@@ -10,9 +10,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import data.RestClient;
-import data.TodoItemDescriptor;
 import de.bht.todoapp.android.R;
+import de.bht.todoapp.android.data.TodoItemDescriptor;
+import de.bht.todoapp.android.data.rest.RestClient;
 import de.bht.todoapp.android.model.TodoItemList;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
 import de.bht.todoapp.android.ui.base.AbstractListActivity;
@@ -80,13 +80,6 @@ public class ItemListActivity extends AbstractListActivity
 			final String password = getMainApplication().getPreferences().getString("password", "");
 			final RestClient client = RestClient.getInstance(email, password);
 			response = client.findAllItems(getMainApplication().getPreferences().getLong("accountId", -1));
-			
-//			try {
-//				Thread.sleep(500);
-//			}
-//			catch(InterruptedException e) {
-//				Log.d(TAG, e.getMessage());
-//			}
 			return response;
 		}
 		
@@ -100,7 +93,6 @@ public class ItemListActivity extends AbstractListActivity
 		protected void onPostExecute(TodoItemList list) {
 			super.onPostExecute(list);
 			final ItemListActivity activity = ItemListActivity.this;
-			Log.d(TAG, list.toString());
 			//setListAdapter(new ItemAdapter(activity, cursor));
 		}
 	}

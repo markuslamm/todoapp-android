@@ -1,7 +1,7 @@
 /**
  * 
  */
-package data;
+package de.bht.todoapp.android.data.rest;
 
 import java.util.Collections;
 

@@ -3,6 +3,9 @@
  */
 package de.bht.todoapp.android.model;
 
+import android.content.ContentValues;
+import de.bht.todoapp.android.data.db.TodoItemDescriptor;
+
 /**
  * @author markus
  * 
@@ -132,6 +135,18 @@ public class TodoItem extends BaseEntity
 	 */
 	public void setPriority(final Priority priority) {
 		this.priority = priority;
+	}
+
+	public static ContentValues initContentValues(final TodoItem item) {
+		final ContentValues values = new ContentValues();
+		values.put(TodoItemDescriptor.TITLE_COLUMN, item.getTitle());
+		values.put(TodoItemDescriptor.DESCRIPTION_COLUMN, item.getDescription());
+		values.put(TodoItemDescriptor.PRIORITY_COLUMN, item.getPriority().toString());
+		values.put(TodoItemDescriptor.STATUS_COLUMN, item.getStatus().toString());
+		values.put(TodoItemDescriptor.DUEDATE_COLUMN, item.getDueDate());
+		values.put(TodoItemDescriptor.LATITUDE_COLUMN, item.getLatitude());
+		values.put(TodoItemDescriptor.LONGITUDE_COLUMN, item.getLongitude());
+		return values;
 	}
 
 	public static Status getStatusFromString(final String status) {

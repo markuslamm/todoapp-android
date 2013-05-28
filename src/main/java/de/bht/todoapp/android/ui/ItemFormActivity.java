@@ -26,7 +26,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import de.bht.todoapp.android.R;
-import de.bht.todoapp.android.data.TodoItemDescriptor;
+import de.bht.todoapp.android.data.db.TodoItemDescriptor;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
@@ -273,7 +273,6 @@ public class ItemFormActivity extends AbstractActivity
 		protected Uri doInBackground(TodoItem... items) {
 			final TodoItem item = items[0];
 			final ContentValues values = new ContentValues();
-			values.put(TodoItemDescriptor.SERVERID_COLUMN, Math.round(Math.random() * 1000));
 			values.put(TodoItemDescriptor.TITLE_COLUMN, item.getTitle());
 			values.put(TodoItemDescriptor.DESCRIPTION_COLUMN, item.getDescription());
 			values.put(TodoItemDescriptor.PRIORITY_COLUMN, item.getPriority().toString());

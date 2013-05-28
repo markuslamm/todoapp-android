@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 import de.bht.todoapp.android.R;
-import de.bht.todoapp.android.data.TodoItemDescriptor;
+import de.bht.todoapp.android.data.db.TodoItemDescriptor;
 import de.bht.todoapp.android.util.DateHelper;
 
 /**

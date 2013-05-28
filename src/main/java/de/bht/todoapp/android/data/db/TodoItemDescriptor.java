@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.bht.todoapp.android.data;
+package de.bht.todoapp.android.data.db;
 
 import android.net.Uri;
 

@@ -16,7 +16,7 @@ public abstract class AbstractAsyncTask<Params, Progress, Result> extends AsyncT
 {
     private static final String TAG = AbstractAsyncTask.class.getSimpleName();
 
-    private final BaseActivity activity;
+	protected final BaseActivity activity;
     private final String message;
 
     /**

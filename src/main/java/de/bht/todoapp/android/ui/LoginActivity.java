@@ -4,7 +4,6 @@
 package de.bht.todoapp.android.ui;
 
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import de.bht.todoapp.android.AuthenticationException;
 import de.bht.todoapp.android.R;
+import de.bht.todoapp.android.data.rest.AccountHandler;
+import de.bht.todoapp.android.data.rest.ResponseHandler;
 import de.bht.todoapp.android.data.rest.RestClient;
 import de.bht.todoapp.android.model.Account;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
@@ -107,9 +108,9 @@ public class LoginActivity extends AbstractActivity
 		private Account performAuthentication(final String email, final String password) throws AuthenticationException {
 			Log.d(TAG, "performAuthentication()...");
 			Account authenticatedUser = null;
-			final RestClient client = RestClient.getInstance(email, password);
+			final RestClient client = new RestClient(email, password);
 			authenticatedUser = client.authenticateUser();
-			Log.d(TAG, "Received Account data from client: " + authenticatedUser.toString());
+			Log.d(TAG, "Received Account data from rest client: " + authenticatedUser.toString());
 			return authenticatedUser;
 		}
 
@@ -125,11 +126,8 @@ public class LoginActivity extends AbstractActivity
 			super.onPostExecute(result);
 			authenticationTask = null;
 			if (result != null) { // Successfully authenticated
-				final Editor edit = getMainApplication().getPreferences().edit();
-				edit.putLong("accountId", result.getEntityId());
-				edit.putString("email", result.getEmail());
-				edit.putString("password", result.getPassword());
-				edit.commit();
+				final ResponseHandler<Account> handler = new AccountHandler(activity);
+				handler.handleResponse(result);
 				final Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
 				startActivity(intent);
 				finish();

@@ -20,7 +20,7 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
-import de.bht.todoapp.android.data.TodoItemDescriptor;
+import de.bht.todoapp.android.data.db.TodoItemDescriptor;
 import de.bht.todoapp.android.model.TodoItem;
 
 /**

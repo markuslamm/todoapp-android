@@ -12,6 +12,6 @@ package de.bht.todoapp.android.data.rest;
  */
 public interface ResponseHandler<T>
 {
-	void handleResponse(T response);
+	T handleResponse(T response);
 	
 }

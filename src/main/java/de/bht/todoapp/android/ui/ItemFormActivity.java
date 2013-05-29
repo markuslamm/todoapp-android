@@ -12,7 +12,6 @@ import java.util.Locale;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -26,7 +25,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import de.bht.todoapp.android.R;
+import de.bht.todoapp.android.data.IDataAccessor;
 import de.bht.todoapp.android.data.db.TodoItemDescriptor;
+import de.bht.todoapp.android.data.rest.ResponseHandler;
+import de.bht.todoapp.android.data.rest.RestClient;
+import de.bht.todoapp.android.data.rest.TodoItemHandler;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
@@ -52,7 +55,7 @@ public class ItemFormActivity extends AbstractActivity
 
 	private Spinner spnPriority;
 	private Spinner spnStatus;
-	
+
 	private static final int DATE_DIALOG_ID = 10;
 	private static final int TIME_DIALOG_ID = 20;
 
@@ -87,9 +90,7 @@ public class ItemFormActivity extends AbstractActivity
 		}
 		txtHeadline.setText(headline);
 		itemModel = populateItem(itemUri);
-		if (itemModel != null) {
-			fillData(itemModel);
-		}
+		fillData(itemModel);
 	}
 
 	private TodoItem populateItem(final Uri uri) {
@@ -153,7 +154,7 @@ public class ItemFormActivity extends AbstractActivity
 		txtTime = (TextView) findViewById(R.id.txtTime);
 		txtLatitude = (TextView) findViewById(R.id.txtLatitude);
 		txtLongitude = (TextView) findViewById(R.id.txtLongitude);
-		
+
 		spnPriority = (Spinner) findViewById(R.id.spn_priority);
 		spnPriority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
@@ -168,7 +169,7 @@ public class ItemFormActivity extends AbstractActivity
 			public void onNothingSelected(AdapterView<?> arg0) {
 			}
 		});
-		
+
 		spnStatus = (Spinner) findViewById(R.id.spn_status);
 		spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
 		{
@@ -251,10 +252,8 @@ public class ItemFormActivity extends AbstractActivity
 		}
 	}
 
-	private class SaveItemTask extends AbstractAsyncTask<TodoItem, Void, Uri>
+	private class SaveItemTask extends AbstractAsyncTask<TodoItem, Void, TodoItem>
 	{
-		// private Uri newUri = null;
-
 		/**
 		 * @param activity
 		 * @param message
@@ -270,33 +269,24 @@ public class ItemFormActivity extends AbstractActivity
 		 * @see android.os.AsyncTask#doInBackground(Params[])
 		 */
 		@Override
-		protected Uri doInBackground(TodoItem... items) {
+		protected TodoItem doInBackground(TodoItem... items) {
 			final TodoItem item = items[0];
-			final ContentValues values = new ContentValues();
-			values.put(TodoItemDescriptor.TITLE_COLUMN, item.getTitle());
-			values.put(TodoItemDescriptor.DESCRIPTION_COLUMN, item.getDescription());
-			values.put(TodoItemDescriptor.PRIORITY_COLUMN, item.getPriority().toString());
-			values.put(TodoItemDescriptor.STATUS_COLUMN, item.getStatus().toString());
-			values.put(TodoItemDescriptor.DUEDATE_COLUMN, item.getDueDate());
-			values.put(TodoItemDescriptor.LATITUDE_COLUMN, 13.1111111);
-			values.put(TodoItemDescriptor.LONGITUDE_COLUMN, 53.123456);
-			Uri uri;
-			if(itemUri == null) { // insert
-				uri = getContentResolver().insert(TodoItemDescriptor.CONTENT_URI, values);
-			}
-			else {
-				int count = getContentResolver().update(TodoItemDescriptor.CONTENT_URI, values, "_id=" + item.getInternalId(), null);
-				uri = itemUri;
-			}
-			return uri;
+			final String email = getMainApplication().getPreferences().getString("email", "");
+			final String password = getMainApplication().getPreferences().getString("password", "");
+			final IDataAccessor client = new RestClient(email, password);
+			TodoItem response = null;
+			response = (itemUri == null) ? client.createItem(item) : client.updateItem(item);
+			return item;
 		}
 
 		@Override
-		protected void onPostExecute(final Uri result) {
+		protected void onPostExecute(final TodoItem result) {
 			super.onPostExecute(result);
 			saveTask = null;
 			if (result != null) {
 				Log.d(TAG, "Item saved: " + result);
+				final ResponseHandler<TodoItem> handler = new TodoItemHandler(activity);
+				handler.handleResponse(result);
 				final Intent intent = new Intent(ItemFormActivity.this, ItemListActivity.class);
 				startActivity(intent);
 			}

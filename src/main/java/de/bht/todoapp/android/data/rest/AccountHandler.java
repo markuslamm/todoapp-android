@@ -34,7 +34,7 @@ public class AccountHandler implements ResponseHandler<Account>
 	 * springframework.http.ResponseEntity)
 	 */
 	@Override
-	public void handleResponse(final Account response) {
+	public Account handleResponse(final Account response) {
 		Log.d(TAG, "handle Account response : " + response);
 		/* store authenticated account in local sqlite store */
 		final ContentValues values = new ContentValues();
@@ -42,6 +42,8 @@ public class AccountHandler implements ResponseHandler<Account>
 		values.put(AccountDescriptor.EMAIL_COLUMN, response.getEmail());
 		values.put(AccountDescriptor.PASSWORD_COLUMN, response.getPassword());
 		final Uri uri = ((Activity) context).getContentResolver().insert(AccountDescriptor.CONTENT_URI, values);
+		final Long internalId = Long.valueOf(uri.getLastPathSegment());
+		response.setInternalId(internalId);
 		Log.d(TAG, "Account saved in local store: " + response);
 		/*
 		 * store account data in preferences store, needed for upcoming rest
@@ -52,5 +54,7 @@ public class AccountHandler implements ResponseHandler<Account>
 		edit.putString("email", response.getEmail());
 		edit.putString("password", response.getPassword());
 		edit.commit();
+
+		return response;
 	}
 }

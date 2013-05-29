@@ -13,6 +13,8 @@ import android.widget.ListView;
 import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.data.IDataAccessor;
 import de.bht.todoapp.android.data.db.TodoItemDescriptor;
+import de.bht.todoapp.android.data.rest.ItemListHandler;
+import de.bht.todoapp.android.data.rest.ResponseHandler;
 import de.bht.todoapp.android.data.rest.RestClient;
 import de.bht.todoapp.android.model.TodoItemList;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
@@ -93,8 +95,10 @@ public class ItemListActivity extends AbstractListActivity
 		@Override
 		protected void onPostExecute(TodoItemList itemList) {
 			super.onPostExecute(itemList);
+			final ResponseHandler<TodoItemList> handler = new ItemListHandler(activity);
+			handler.handleResponse(itemList);
 			final ItemListActivity activity = ItemListActivity.this;
-			// setListAdapter(new ItemAdapter(activity, itemList));
+			setListAdapter(new TodoItemAdapter(activity, itemList.getItems()));
 		}
 	}
 }

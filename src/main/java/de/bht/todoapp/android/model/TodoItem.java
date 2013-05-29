@@ -139,6 +139,7 @@ public class TodoItem extends BaseEntity
 
 	public static ContentValues initContentValues(final TodoItem item) {
 		final ContentValues values = new ContentValues();
+		values.put(TodoItemDescriptor.SERVERID_COLUMN, item.getEntityId());
 		values.put(TodoItemDescriptor.TITLE_COLUMN, item.getTitle());
 		values.put(TodoItemDescriptor.DESCRIPTION_COLUMN, item.getDescription());
 		values.put(TodoItemDescriptor.PRIORITY_COLUMN, item.getPriority().toString());

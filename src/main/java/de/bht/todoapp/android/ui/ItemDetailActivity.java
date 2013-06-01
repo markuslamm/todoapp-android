@@ -11,8 +11,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import de.bht.todoapp.android.R;
+import de.bht.todoapp.android.data.ItemService;
 import de.bht.todoapp.android.data.db.TodoItemDescriptor;
+import de.bht.todoapp.android.data.rest.RestItemService;
+import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
+import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
+import de.bht.todoapp.android.ui.base.BaseActivity;
 import de.bht.todoapp.android.util.DateHelper;
 
 /**
@@ -34,6 +39,8 @@ public class ItemDetailActivity extends AbstractActivity
 	private TextView txtPriority;
 
 	private Uri itemUri;
+
+	private DeleteItemTask deleteTask = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -60,13 +67,6 @@ public class ItemDetailActivity extends AbstractActivity
 		}
 	}
 
-	public void onClickDeleteItem(final View view) {
-		final int deleteCount = getContentResolver().delete(itemUri, null, null);
-		Log.d(TAG, deleteCount + " item deleted");
-		final Intent intent = new Intent(this, ItemListActivity.class);
-		startActivity(intent);
-	}
-
 	private void fillData(final Uri uri) {
 		final Cursor cursor = getContentResolver().query(uri, null, null, null, null);
 		if (cursor != null) {
@@ -88,6 +88,47 @@ public class ItemDetailActivity extends AbstractActivity
 		final Intent i = new Intent(this, ItemFormActivity.class);
 		i.putExtra(TodoItemDescriptor.MIME_ITEM, itemUri);
 		startActivity(i);
+	}
+
+	public void onClickDeleteItem(final View view) {
+		if (null == deleteTask) {
+			final Cursor cursor = getContentResolver().query(itemUri, null, null, null, null);
+			
+			deleteTask = new DeleteItemTask(this, getString(R.string.progress_delete_item));
+			// deleteTask.execute(params)
+		}
+	}
+
+	private class DeleteItemTask extends AbstractAsyncTask<TodoItem, Void, Integer>
+	{
+		public DeleteItemTask(final BaseActivity activity, final String message)
+		{
+			super(activity, message);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(Params[])
+		 */
+		@Override
+		protected Integer doInBackground(TodoItem... items) {
+			final TodoItem item = items[0];
+			final ItemService itemService = new RestItemService(ItemDetailActivity.this);
+			final Integer deleteCount = itemService.deleteItem(item);
+			return deleteCount;
+		}
+
+		@Override
+		protected void onPostExecute(final Integer result) {
+			super.onPostExecute(result);
+			deleteTask = null;
+			if (result != null) {
+				Log.d(TAG, "Item deleted. count: " + result);
+				final Intent intent = new Intent(ItemDetailActivity.this, ItemListActivity.class);
+				startActivity(intent);
+			}
+		}
 	}
 
 }

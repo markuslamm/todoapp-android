@@ -12,7 +12,6 @@ import java.util.Locale;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,11 +24,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import de.bht.todoapp.android.R;
-import de.bht.todoapp.android.data.IDataAccessor;
+import de.bht.todoapp.android.data.ItemService;
 import de.bht.todoapp.android.data.db.TodoItemDescriptor;
-import de.bht.todoapp.android.data.rest.ResponseHandler;
-import de.bht.todoapp.android.data.rest.RestClient;
-import de.bht.todoapp.android.data.rest.TodoItemHandler;
+import de.bht.todoapp.android.data.rest.RestItemService;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
@@ -271,26 +268,12 @@ public class ItemFormActivity extends AbstractActivity
 		@Override
 		protected TodoItem doInBackground(TodoItem... items) {
 			final TodoItem item = items[0];
-			final String email = getMainApplication().getPreferences().getString("email", "");
-			final String password = getMainApplication().getPreferences().getString("password", "");
-			final IDataAccessor client = new RestClient(email, password);
-			TodoItem response = null;
-			response = (itemUri == null) ? client.createItem(item) : client.updateItem(item);
-			return item;
+			final ItemService itemService = new RestItemService(ItemFormActivity.this);
+			final TodoItem managedItem = (itemUri == null) ? itemService.createItem(item) : itemService.updateItem(item);
+			return managedItem;
 		}
 
-		@Override
-		protected void onPostExecute(final TodoItem result) {
-			super.onPostExecute(result);
-			saveTask = null;
-			if (result != null) {
-				Log.d(TAG, "Item saved: " + result);
-				final ResponseHandler<TodoItem> handler = new TodoItemHandler(activity);
-				handler.handleResponse(result);
-				final Intent intent = new Intent(ItemFormActivity.this, ItemListActivity.class);
-				startActivity(intent);
-			}
-		}
+
 
 		@Override
 		protected void onPreExecute() {

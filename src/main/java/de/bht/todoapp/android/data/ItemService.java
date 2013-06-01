@@ -10,7 +10,7 @@ import de.bht.todoapp.android.model.TodoItemList;
  * @author markus
  * 
  */
-public interface IDataAccessor
+public interface ItemService
 {
 	TodoItemList findAllItems();
 
@@ -18,5 +18,5 @@ public interface IDataAccessor
 
 	TodoItem updateItem(TodoItem item);
 
-	int deleteItem();
+	int deleteItem(TodoItem item);
 }

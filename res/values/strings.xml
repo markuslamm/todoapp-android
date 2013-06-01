@@ -3,12 +3,13 @@
 
     <string name="app_name">ToDoApp Android Client</string>
 
-    <!-- Error messages -->
+    <!-- (error) messages -->
     <string name="error_title">an error occurred.</string>
-    <string name="error_network">a network connection could\'t be established.</string>
-    <string name="error_authorization">not authorized!\ncheck credentials</string>
+    <string name="error_remote">no remote connection available</string>
+    <string name="error_authorization">not authorized! check credentials</string>
     <string name="error_email_format">invalid email format</string>
     <string name="error_password_format">invalid password format</string>
+    <string name="connection_available">remote connection available</string>
 
     <!-- login screen -->
     <string name="headline_login">ToDoApp. please login.</string>
@@ -32,6 +33,7 @@
     <string name="label_dueDate">due date</string>
     <string name="label_status">status</string>
     <string name="label_isFavourite">is favourite?</string>
+    <string name="progress_delete_item">deleting item</string>
 
     <!-- item form -->
     <string name="label_save_item">save</string>

@@ -37,8 +37,8 @@ public abstract class AbstractListActivity extends ListActivity implements BaseA
      * net.twentyfourseven.todoapp.ui.base.BaseActivity#displayNetworkError()
      */
     public void displayNetworkError() {
-        final String message = getString(R.string.error_network);
-        getMainApplication().displayErrorToast(this, message);
+		final String message = getString(R.string.error_remote);
+        getMainApplication().displayToast(this, message);
     }
 
     /*

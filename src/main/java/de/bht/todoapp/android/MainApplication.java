@@ -74,7 +74,7 @@ public class MainApplication extends Application
 	 * @param context
 	 * @param message
 	 */
-	public void displayErrorToast(final Context context, final String message) {
+	public void displayToast(final Context context, final String message) {
 		Toast.makeText(context, message, Toast.LENGTH_LONG).show();
 	}
 
@@ -134,13 +134,16 @@ public class MainApplication extends Application
 				throw new RuntimeException("ConnectivityManager not available");
 			}
 			final NetworkInfo[] networkInfos = conManager.getAllNetworkInfo();
+			String toastMsg = getString(R.string.error_remote);
 			for (final NetworkInfo info : networkInfos) {
 				//Log.d(TAG, "network info: " + info.toString());
 				if (info.isConnected()) {
 					Log.d(TAG, "network connected with: " + info.toString());
 					networkConnectionAvailable = true;
+					toastMsg = getString(R.string.connection_available);
 				}
 			}
+			displayToast(MainApplication.this, toastMsg);
 		}
 	}
 

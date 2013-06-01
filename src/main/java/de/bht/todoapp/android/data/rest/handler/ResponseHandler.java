@@ -1,10 +1,7 @@
 /**
  * 
  */
-package de.bht.todoapp.android.data.rest;
-
-
-
+package de.bht.todoapp.android.data.rest.handler;
 
 /**
  * @author markus
@@ -13,5 +10,4 @@ package de.bht.todoapp.android.data.rest;
 public interface ResponseHandler<T>
 {
 	T handleResponse(T response);
-	
 }

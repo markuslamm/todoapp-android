@@ -3,15 +3,17 @@
  */
 package de.bht.todoapp.android.model;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 /**
  * @author markus
  *
  */
 public abstract class BaseEntity
 {
+	@JsonIgnore
 	private Long internalId;
 	private Long entityId;
-
 
 	/**
 	 * @return

@@ -19,7 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import android.util.Log;
 import de.bht.todoapp.android.AuthenticationException;
-import de.bht.todoapp.android.data.IDataAccessor;
+import de.bht.todoapp.android.data.ItemService;
 import de.bht.todoapp.android.model.Account;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.model.TodoItemList;
@@ -28,7 +28,7 @@ import de.bht.todoapp.android.model.TodoItemList;
  * @author markus
  * 
  */
-public class RestClient implements IDataAccessor
+public class RestClient implements ItemService
 {
 	private static final String TAG = RestClient.class.getSimpleName();
 
@@ -56,10 +56,9 @@ public class RestClient implements IDataAccessor
 		Log.d(TAG, "Trying to authenticate with " + email + ":" + password);
 		Account accountData = null;
 		try {
-			ResponseEntity<Account> response = restTemplate.exchange(SERVER_ROOT + APPLICATION_PATH + AUTH_PATH, HttpMethod.GET,
+			final ResponseEntity<Account> response = restTemplate.exchange(SERVER_ROOT + APPLICATION_PATH + AUTH_PATH, HttpMethod.GET,
 					requestEntity, Account.class);
 			Log.d(TAG, "Authentication response: " + response.toString());
-
 			if (response.getStatusCode() == HttpStatus.OK) {
 				accountData = response.getBody();
 				Log.d(TAG, "Response body: " + accountData);
@@ -97,7 +96,7 @@ public class RestClient implements IDataAccessor
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * de.bht.todoapp.android.data.IDataAccessor#createItem(de.bht.todoapp.android
+	 * de.bht.todoapp.android.data.ItemService#createItem(de.bht.todoapp.android
 	 * .model.TodoItem)
 	 */
 	@Override
@@ -126,24 +125,55 @@ public class RestClient implements IDataAccessor
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * de.bht.todoapp.android.data.IDataAccessor#updateItem(de.bht.todoapp.android
+	 * de.bht.todoapp.android.data.ItemService#updateItem(de.bht.todoapp.android
 	 * .model.TodoItem)
 	 */
 	@Override
-	public TodoItem updateItem(TodoItem item) {
-		// TODO Auto-generated method stub
-		return null;
+	public TodoItem updateItem(final TodoItem item) {
+		final HttpHeaders requestHeaders = createAuthorizedHeaders();
+		requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+		final HttpEntity<TodoItem> requestEntity = new HttpEntity<TodoItem>(item, requestHeaders);
+		final RestTemplate restTemplate = getRestTemplate();
+		TodoItem updatedItem = null;
+		try {
+			ResponseEntity<TodoItem> response = restTemplate.exchange(SERVER_ROOT + APPLICATION_PATH + ITEMS_URI + "/" + item.getEntityId(), HttpMethod.PUT, requestEntity,
+					TodoItem.class);
+			if (response.getStatusCode() == HttpStatus.OK) {
+				updatedItem = response.getBody();
+				Log.d(TAG, "Response body: " + item);
+			}
+		}
+		catch (RestClientException e) {
+			Log.d(TAG, "Unable to create item: " + e.getMessage());
+		}
+		return updatedItem;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see de.bht.todoapp.android.data.IDataAccessor#deleteItem()
+	 * @see de.bht.todoapp.android.data.ItemService#deleteItem()
 	 */
 	@Override
-	public int deleteItem() {
-		// TODO Auto-generated method stub
-		return 0;
+	public int deleteItem(final TodoItem item) {
+		final HttpHeaders requestHeaders = createAuthorizedHeaders();
+		requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		final HttpEntity<?> requestEntity = new HttpEntity<Object>(requestHeaders);
+		final RestTemplate restTemplate = getRestTemplate();
+		Integer deleteCount = null;
+		try {
+			ResponseEntity<Integer> response = restTemplate.exchange(SERVER_ROOT + APPLICATION_PATH + ITEMS_URI + "/" + item.getEntityId(), HttpMethod.DELETE, requestEntity,
+					Integer.class);
+			if (response.getStatusCode() == HttpStatus.OK) {
+				deleteCount = response.getBody();
+				Log.d(TAG, "Response body: " + item);
+			}
+		}
+		catch (RestClientException e) {
+			Log.d(TAG, "Unable to delete item: " + e.getMessage());
+		}
+		return deleteCount;
 	}
 
 	private HttpHeaders createAuthorizedHeaders() {

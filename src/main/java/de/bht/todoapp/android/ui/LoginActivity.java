@@ -11,9 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import de.bht.todoapp.android.AuthenticationException;
 import de.bht.todoapp.android.R;
-import de.bht.todoapp.android.data.rest.AccountHandler;
-import de.bht.todoapp.android.data.rest.ResponseHandler;
-import de.bht.todoapp.android.data.rest.RestClient;
+import de.bht.todoapp.android.data.AccountService;
+import de.bht.todoapp.android.data.rest.RestAccountService;
+import de.bht.todoapp.android.data.rest.handler.AccountHandler;
+import de.bht.todoapp.android.data.rest.handler.ResponseHandler;
 import de.bht.todoapp.android.model.Account;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
@@ -108,8 +109,8 @@ public class LoginActivity extends AbstractActivity
 		private Account performAuthentication(final String email, final String password) throws AuthenticationException {
 			Log.d(TAG, "performAuthentication()...");
 			Account authenticatedUser = null;
-			final RestClient client = new RestClient(email, password);
-			authenticatedUser = client.authenticateUser();
+			final AccountService accountService = new RestAccountService();
+			authenticatedUser = accountService.authenticateAccount(email, password);
 			Log.d(TAG, "Received Account data from rest client: " + authenticatedUser.toString());
 			return authenticatedUser;
 		}
@@ -126,8 +127,8 @@ public class LoginActivity extends AbstractActivity
 			super.onPostExecute(result);
 			authenticationTask = null;
 			if (result != null) { // Successfully authenticated
-				final ResponseHandler<Account> handler = new AccountHandler(activity);
-				handler.handleResponse(result);
+				final ResponseHandler<Account> responseHandler = new AccountHandler(LoginActivity.this, getContentResolver());
+				final Account account = responseHandler.handleResponse(result);
 				final Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
 				startActivity(intent);
 				finish();

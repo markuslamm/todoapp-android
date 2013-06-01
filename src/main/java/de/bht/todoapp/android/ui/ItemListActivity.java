@@ -11,11 +11,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 import de.bht.todoapp.android.R;
-import de.bht.todoapp.android.data.IDataAccessor;
+import de.bht.todoapp.android.data.ItemService;
 import de.bht.todoapp.android.data.db.TodoItemDescriptor;
-import de.bht.todoapp.android.data.rest.ItemListHandler;
-import de.bht.todoapp.android.data.rest.ResponseHandler;
-import de.bht.todoapp.android.data.rest.RestClient;
+import de.bht.todoapp.android.data.rest.RestItemService;
+import de.bht.todoapp.android.data.rest.handler.ItemListHandler;
+import de.bht.todoapp.android.data.rest.handler.ResponseHandler;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.model.TodoItemList;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
@@ -80,15 +80,9 @@ public class ItemListActivity extends AbstractListActivity
 		 */
 		@Override
 		protected TodoItemList doInBackground(Void... params) {
-			final String email = getMainApplication().getPreferences().getString("email", "");
-			final String password = getMainApplication().getPreferences().getString("password", "");
-
-			final IDataAccessor client = new RestClient(email, password);
-			final TodoItemList itemList = client.findAllItems();
+			final ItemService itemService = new RestItemService(ItemListActivity.this);
+			final TodoItemList itemList = itemService.findAllItems();
 			return itemList;
-
-			// return getContentResolver().query(TodoItemDescriptor.CONTENT_URI,
-			// null, null, null, null);
 		}
 
 		@Override
@@ -100,10 +94,9 @@ public class ItemListActivity extends AbstractListActivity
 		@Override
 		protected void onPostExecute(TodoItemList itemList) {
 			super.onPostExecute(itemList);
-			final ResponseHandler<TodoItemList> handler = new ItemListHandler(activity);
+			final ResponseHandler<TodoItemList> handler = new ItemListHandler(getContentResolver());
 			final TodoItemList list = handler.handleResponse(itemList);
-			final ItemListActivity activity = ItemListActivity.this;
-			listAdapter = new TodoItemAdapter(activity, itemList.getItems());
+			listAdapter = new TodoItemAdapter(ItemListActivity.this, list.getItems());
 			setListAdapter(listAdapter);
 		}
 	}

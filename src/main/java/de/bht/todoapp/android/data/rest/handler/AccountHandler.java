@@ -1,9 +1,9 @@
 /**
  * 
  */
-package de.bht.todoapp.android.data.rest;
+package de.bht.todoapp.android.data.rest.handler;
 
-import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.SharedPreferences.Editor;
 import android.net.Uri;
@@ -21,30 +21,35 @@ public class AccountHandler implements ResponseHandler<Account>
 	private static final String TAG = AccountHandler.class.getSimpleName();
 
 	private BaseActivity context;
+	private ContentResolver contentResolver;
 
-	public AccountHandler(final BaseActivity context)
+	public AccountHandler(final BaseActivity context, final ContentResolver contentResolver)
 	{
 		this.context = context;
+		this.contentResolver = contentResolver;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see de.bht.todoapp.android.data.rest.ResponseHandler#handleResponse(org.
-	 * springframework.http.ResponseEntity)
+	 * @see
+	 * de.bht.todoapp.android.data.rest.ResponseHandler#handleResponse(java.
+	 * lang.Object)
 	 */
 	@Override
 	public Account handleResponse(final Account response) {
-		Log.d(TAG, "handle Account response : " + response);
-		/* store authenticated account in local sqlite store */
-		final ContentValues values = new ContentValues();
-		values.put(AccountDescriptor.SERVERID_COLUMN, response.getEntityId());
-		values.put(AccountDescriptor.EMAIL_COLUMN, response.getEmail());
-		values.put(AccountDescriptor.PASSWORD_COLUMN, response.getPassword());
-		final Uri uri = ((Activity) context).getContentResolver().insert(AccountDescriptor.CONTENT_URI, values);
+		Log.d(TAG, "handle Account response: " + response);
+		/*
+		 * prepare for local db store
+		 */
+		final ContentValues values = Account.initContentValues(response);
+		/*
+		 * insert in db
+		 */
+		final Uri uri = contentResolver.insert(AccountDescriptor.CONTENT_URI, values);
 		final Long internalId = Long.valueOf(uri.getLastPathSegment());
 		response.setInternalId(internalId);
-		Log.d(TAG, "Account saved in local store: " + response);
+		Log.d(TAG, "Account saved in local store: " + uri);
 		/*
 		 * store account data in preferences store, needed for upcoming rest
 		 * calls
@@ -54,7 +59,6 @@ public class AccountHandler implements ResponseHandler<Account>
 		edit.putString("email", response.getEmail());
 		edit.putString("password", response.getPassword());
 		edit.commit();
-
 		return response;
 	}
 }

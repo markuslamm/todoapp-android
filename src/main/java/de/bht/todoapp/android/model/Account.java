@@ -6,6 +6,9 @@
  */
 package de.bht.todoapp.android.model;
 
+import android.content.ContentValues;
+import de.bht.todoapp.android.data.db.AccountDescriptor;
+
 /**
  * @author markus
  * 
@@ -54,6 +57,15 @@ public class Account extends BaseEntity
     public void setPassword(final String password) {
         this.password = password;
     }
+    
+	public static ContentValues initContentValues(final Account account) {
+		final ContentValues values = new ContentValues();
+		values.put(AccountDescriptor.SERVERID_COLUMN, account.getEntityId());
+		values.put(AccountDescriptor.EMAIL_COLUMN, account.getEmail());
+		values.put(AccountDescriptor.PASSWORD_COLUMN, account.getPassword());
+		return values;
+	}
+
     
     
     /* (non-Javadoc)

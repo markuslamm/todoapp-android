@@ -36,8 +36,8 @@ public abstract class AbstractActivity extends Activity implements BaseActivity
 	 */
 	@Override
 	public void displayNetworkError() {
-		final String message = getString(R.string.error_network);
-		getMainApplication().displayErrorToast(this, message);
+		final String message = getString(R.string.error_remote);
+		getMainApplication().displayToast(this, message);
 	}
 
 	/*

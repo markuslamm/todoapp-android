@@ -4,8 +4,6 @@
 package de.bht.todoapp.android.ui;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -38,8 +36,7 @@ public class ItemDetailActivity extends AbstractActivity
 	private TextView txtStatus;
 	private TextView txtPriority;
 
-	private Uri itemUri;
-
+	private TodoItem itemModel;
 	private DeleteItemTask deleteTask = null;
 
 	@Override
@@ -58,44 +55,36 @@ public class ItemDetailActivity extends AbstractActivity
 
 		final Bundle extras = getIntent().getExtras();
 		if (extras != null && extras.containsKey(TodoItemDescriptor.MIME_ITEM)) {
-			itemUri = extras.getParcelable(TodoItemDescriptor.MIME_ITEM);
-			Log.d(TAG, "Item URI received: " + itemUri);
-			fillData(itemUri);
+			itemModel = (TodoItem) extras.getSerializable(TodoItemDescriptor.MIME_ITEM);
+			Log.d(TAG, "Item received: " + itemModel);
+			fillData(itemModel);
 		}
 		else {
-			throw new RuntimeException("itemUri == NULL. Unable to display item details");
+			throw new RuntimeException("item == NULL. Unable to display item details");
 		}
 	}
 
-	private void fillData(final Uri uri) {
-		final Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-		if (cursor != null) {
-			cursor.moveToFirst();
-			txtTitle.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.TITLE_COLUMN)));
-			txtDescription.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.DESCRIPTION_COLUMN)));
-			txtLatitude.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.LATITUDE_COLUMN)));
-			txtLongitude.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.LONGITUDE_COLUMN)));
-			final Long dateInMillis = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN));
-			txtDate.setText(DateHelper.getDateString(dateInMillis));
-			txtTime.setText(DateHelper.getTimeString(dateInMillis));
-			txtStatus.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN)));
-			txtPriority.setText(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.PRIORITY_COLUMN)));
-			cursor.close();
-		}
+	private void fillData(final TodoItem itemModel) {
+		txtTitle.setText(itemModel.getTitle());
+		txtDescription.setText(itemModel.getDescription());
+		txtLatitude.setText(String.valueOf(itemModel.getLatitude()));
+		txtLongitude.setText(String.valueOf(itemModel.getLongitude()));
+		txtDate.setText(DateHelper.getDateString(itemModel.getDueDate()));
+		txtTime.setText(DateHelper.getTimeString(itemModel.getDueDate()));
+		txtStatus.setText(itemModel.getStatus().toString());
+		txtPriority.setText(itemModel.getPriority().toString());
 	}
 
 	public void onClickEditItem(final View view) {
 		final Intent i = new Intent(this, ItemFormActivity.class);
-		i.putExtra(TodoItemDescriptor.MIME_ITEM, itemUri);
+		i.putExtra(TodoItemDescriptor.MIME_ITEM, itemModel);
 		startActivity(i);
 	}
 
 	public void onClickDeleteItem(final View view) {
 		if (null == deleteTask) {
-			final Cursor cursor = getContentResolver().query(itemUri, null, null, null, null);
-			
 			deleteTask = new DeleteItemTask(this, getString(R.string.progress_delete_item));
-			// deleteTask.execute(params)
+			deleteTask.execute(itemModel);
 		}
 	}
 
@@ -115,6 +104,8 @@ public class ItemDetailActivity extends AbstractActivity
 		protected Integer doInBackground(TodoItem... items) {
 			final TodoItem item = items[0];
 			final ItemService itemService = new RestItemService(ItemDetailActivity.this);
+			// final ItemService itemService = new
+			// LocalItemService(getContentResolver());
 			final Integer deleteCount = itemService.deleteItem(item);
 			return deleteCount;
 		}

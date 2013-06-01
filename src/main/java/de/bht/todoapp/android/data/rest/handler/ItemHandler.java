@@ -44,14 +44,14 @@ public class ItemHandler implements ResponseHandler<TodoItem>
 			final Uri uri = contentResolver.insert(TodoItemDescriptor.CONTENT_URI, values);
 			final Long internalId = Long.valueOf(uri.getLastPathSegment());
 			response.setInternalId(internalId);
-			Log.d(TAG, "stored new item in local db: " + uri);
+			Log.d(TAG, "new item stored in local db: " + uri);
 		}
 		/*
 		 * existing item, update
 		 */
 		else {
 			final int updateCount = contentResolver.update(TodoItemDescriptor.CONTENT_URI, values, "_id=" + response.getInternalId(), null);
-			Log.d(TAG, "Items updated: " + updateCount);
+			Log.d(TAG, "item updated: " + updateCount);
 		}
 		return response;
 	}

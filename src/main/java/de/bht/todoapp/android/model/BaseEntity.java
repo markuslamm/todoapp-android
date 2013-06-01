@@ -3,13 +3,15 @@
  */
 package de.bht.todoapp.android.model;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  * @author markus
  *
  */
-public abstract class BaseEntity
+public abstract class BaseEntity implements Serializable
 {
 	@JsonIgnore
 	private Long internalId;

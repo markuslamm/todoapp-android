@@ -12,8 +12,7 @@ import java.util.Locale;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -27,6 +26,8 @@ import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.data.ItemService;
 import de.bht.todoapp.android.data.db.TodoItemDescriptor;
 import de.bht.todoapp.android.data.rest.RestItemService;
+import de.bht.todoapp.android.data.rest.handler.ItemHandler;
+import de.bht.todoapp.android.data.rest.handler.ResponseHandler;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
@@ -56,7 +57,6 @@ public class ItemFormActivity extends AbstractActivity
 	private static final int DATE_DIALOG_ID = 10;
 	private static final int TIME_DIALOG_ID = 20;
 
-	private Uri itemUri = null;
 	private TodoItem itemModel = null;
 
 	private SaveItemTask saveTask = null;
@@ -66,17 +66,16 @@ public class ItemFormActivity extends AbstractActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.item_form);
 		initWidgets();
+		String headline = null;
 		// new or edit item form
 		final Bundle extras = getIntent().getExtras();
-		String headline = null;
-
-		// is update
 		if (extras != null && extras.containsKey((TodoItemDescriptor.MIME_ITEM))) {
 			headline = getString(R.string.label_update_item);
 			// txtTitle.setHint("");
 			// txtDescription.setHint("");
-			itemUri = extras.getParcelable(TodoItemDescriptor.MIME_ITEM);
-			Log.d(TAG, "Item URI received: " + itemUri);
+			itemModel = (TodoItem) extras.getSerializable(TodoItemDescriptor.MIME_ITEM);
+			Log.d(TAG, "Item received: " + itemModel);
+			fillData(itemModel);
 		}
 		// is new
 		else {
@@ -84,49 +83,13 @@ public class ItemFormActivity extends AbstractActivity
 			spnStatus.setEnabled(false);
 			spnStatus.setSelection(0);
 			spnPriority.setSelection(1);
+			/* init new item */
+			itemModel = new TodoItem();
+			itemModel.setStatus(TodoItem.Status.OPEN);
+			itemModel.setPriority(TodoItem.Priority.MEDIUM);
+			itemModel.setDueDate(Calendar.getInstance(Locale.GERMANY).getTimeInMillis());
 		}
 		txtHeadline.setText(headline);
-		itemModel = populateItem(itemUri);
-		fillData(itemModel);
-	}
-
-	private TodoItem populateItem(final Uri uri) {
-		final TodoItem item = new TodoItem();
-		if (uri != null) {
-			final Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-			if (cursor != null) {
-				cursor.moveToFirst();
-				final Long internalId = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.ID_COLUMN));
-				final Long remoteId = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.SERVERID_COLUMN));
-				final String title = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.TITLE_COLUMN));
-				final String description = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.DESCRIPTION_COLUMN));
-				final double latitude = cursor.getDouble(cursor.getColumnIndex(TodoItemDescriptor.LATITUDE_COLUMN));
-				final double longitude = cursor.getDouble(cursor.getColumnIndex(TodoItemDescriptor.LONGITUDE_COLUMN));
-				final long dueDate = cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN));
-				final String status = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN));
-				final String priority = cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.PRIORITY_COLUMN));
-				cursor.close();
-
-				item.setInternalId(internalId);
-				item.setEntityId(remoteId);
-				item.setTitle(title);
-				item.setDescription(description);
-				item.setLatitude(latitude);
-				item.setLongitude(longitude);
-				item.setDueDate(dueDate);
-				item.setPriority(TodoItem.getPriorityFromString(priority));
-				item.setStatus(TodoItem.getStatusFromString(status));
-			}
-			else {
-				throw new RuntimeException("Cursor is NULL. Unable to populate model");
-			}
-		}
-		else {
-			item.setStatus(TodoItem.Status.OPEN);
-			item.setPriority(TodoItem.Priority.MEDIUM);
-			item.setDueDate(Calendar.getInstance(Locale.GERMANY).getTimeInMillis());
-		}
-		return item;
 	}
 
 	private void fillData(final TodoItem item) {
@@ -194,9 +157,7 @@ public class ItemFormActivity extends AbstractActivity
 	@Override
 	protected Dialog onCreateDialog(int id) {
 		final Calendar c = Calendar.getInstance(Locale.GERMANY);
-		if (itemUri != null && itemModel != null) {
-			c.setTimeInMillis(itemModel.getDueDate());
-		}
+		c.setTimeInMillis(itemModel.getDueDate());
 		switch (id) {
 			case DATE_DIALOG_ID:
 				Log.d(TAG, "Create DatePicker");
@@ -269,15 +230,22 @@ public class ItemFormActivity extends AbstractActivity
 		protected TodoItem doInBackground(TodoItem... items) {
 			final TodoItem item = items[0];
 			final ItemService itemService = new RestItemService(ItemFormActivity.this);
-			final TodoItem managedItem = (itemUri == null) ? itemService.createItem(item) : itemService.updateItem(item);
+			// final ItemService itemService = new
+			// LocalItemService(getContentResolver());
+			TodoItem managedItem = (itemModel.getEntityId() == null) ? itemService.createItem(item) : itemService.updateItem(item);
+			final ResponseHandler<TodoItem> handler = new ItemHandler(getContentResolver());
+			managedItem = handler.handleResponse(managedItem);
 			return managedItem;
 		}
 
-
-
 		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
+		protected void onPostExecute(final TodoItem result) {
+			super.onPostExecute(result);
+			saveTask = null;
+			if (result != null) {
+				final Intent intent = new Intent(ItemFormActivity.this, ItemListActivity.class);
+				startActivity(intent);
+			}
 		}
 	}
 

@@ -4,7 +4,6 @@
 package de.bht.todoapp.android.ui;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -45,10 +44,9 @@ public class ItemListActivity extends AbstractListActivity
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		final TodoItem item = listAdapter.getItem(position);
+		Log.d(TAG, "Selected item: " + item);
 		final Intent i = new Intent(this, ItemDetailActivity.class);
-		final Uri itemUri = Uri.parse(TodoItemDescriptor.CONTENT_URI + "/" + item.getInternalId());
-		Log.d(TAG, String.format("Selected uri: %s", itemUri));
-		i.putExtra(TodoItemDescriptor.MIME_ITEM, itemUri);
+		i.putExtra(TodoItemDescriptor.MIME_ITEM, item);
 		startActivity(i);
 	}
 
@@ -81,6 +79,8 @@ public class ItemListActivity extends AbstractListActivity
 		@Override
 		protected TodoItemList doInBackground(Void... params) {
 			final ItemService itemService = new RestItemService(ItemListActivity.this);
+			// final ItemService itemService = new
+			// LocalItemService(getContentResolver());
 			final TodoItemList itemList = itemService.findAllItems();
 			return itemList;
 		}

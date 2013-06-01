@@ -193,17 +193,4 @@ public class RestClient implements ItemService
 		final MappingJacksonHttpMessageConverter messageConverter = new MappingJacksonHttpMessageConverter();
 		return messageConverter;
 	}
-
-	// public T updateRessource(final T ressource, final Long ressourceId) {
-	// Log.d(TAG, "Update ressource with id: " + ressourceId);
-	// final HttpHeaders requestHeaders = createAcceptHeader();
-	// requestHeaders.setContentType(MediaType.APPLICATION_JSON);
-	// final HttpEntity<T> requestEntity = new HttpEntity<T>(ressource,
-	// requestHeaders);
-	// restTemplate = getRestTemplate();
-	// final ResponseEntity<T> response = restTemplate.exchange(getURI() +
-	// PATH_SEPARATOR + ressourceId , HttpMethod.PUT, requestEntity, clazz);
-	// return response.getBody();
-	// }
-
 }

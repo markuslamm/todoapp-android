@@ -143,7 +143,7 @@ public class MainApplication extends Application
 					toastMsg = getString(R.string.connection_available);
 				}
 			}
-			displayToast(MainApplication.this, toastMsg);
+			// displayErrorAlert(MainApplication.this, "", toastMsg);
 		}
 	}
 

@@ -3,6 +3,9 @@
  */
 package de.bht.todoapp.android.ui;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,10 +14,9 @@ import android.view.View;
 import android.widget.ListView;
 import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.data.ItemService;
+import de.bht.todoapp.android.data.db.LocalItemService;
 import de.bht.todoapp.android.data.db.TodoItemDescriptor;
 import de.bht.todoapp.android.data.rest.RestItemService;
-import de.bht.todoapp.android.data.rest.handler.ItemListHandler;
-import de.bht.todoapp.android.data.rest.handler.ResponseHandler;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.model.TodoItemList;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
@@ -78,11 +80,34 @@ public class ItemListActivity extends AbstractListActivity
 		 */
 		@Override
 		protected TodoItemList doInBackground(Void... params) {
-			final ItemService itemService = new RestItemService(ItemListActivity.this);
-			// final ItemService itemService = new
-			// LocalItemService(getContentResolver());
-			final TodoItemList itemList = itemService.findAllItems();
-			return itemList;
+			final ItemService restItemService = new RestItemService(ItemListActivity.this);
+			final ItemService localItemService = new LocalItemService(getContentResolver());
+			List<TodoItem> result = new ArrayList<TodoItem>();
+
+			final TodoItemList localList = localItemService.findAllItems();
+			/* check local db first */
+			if (localList.getItems().size() > 0) {
+				/* items in local db available */
+				Log.d(TAG, "found items in local db: " + localList.getItems().size());
+				if (getMainApplication().hasNetworkConnection()) {
+					/*
+					 * remote connection available, make rest call and insert
+					 * local items remotely. rest service will persist items in
+					 * local store via response handler
+					 */
+					final TodoItemList remoteList = restItemService.createItemList(localList);
+					result = remoteList.getItems();
+				}
+			}
+			else {
+				/* local store empty */
+				Log.d(TAG, "no items found in local db");
+				if (getMainApplication().hasNetworkConnection()) {
+					final TodoItemList remoteList = restItemService.findAllItems();
+					result = remoteList.getItems();
+				}
+			}
+			return new TodoItemList(result);
 		}
 
 		@Override
@@ -94,9 +119,7 @@ public class ItemListActivity extends AbstractListActivity
 		@Override
 		protected void onPostExecute(TodoItemList itemList) {
 			super.onPostExecute(itemList);
-			final ResponseHandler<TodoItemList> handler = new ItemListHandler(getContentResolver());
-			final TodoItemList list = handler.handleResponse(itemList);
-			listAdapter = new TodoItemAdapter(ItemListActivity.this, list.getItems());
+			listAdapter = new TodoItemAdapter(ItemListActivity.this, itemList.getItems());
 			setListAdapter(listAdapter);
 		}
 	}

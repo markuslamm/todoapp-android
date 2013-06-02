@@ -104,4 +104,16 @@ public class LocalItemService implements ItemService
 		return deleteCount;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.bht.todoapp.android.data.ItemService#createItemList(de.bht.todoapp
+	 * .android.model.TodoItemList)
+	 */
+	@Override
+	public TodoItemList createItemList(TodoItemList list) {
+		throw new UnsupportedOperationException("not implemented yet.");
+	}
+
 }

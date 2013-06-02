@@ -3,6 +3,9 @@
  */
 package de.bht.todoapp.android.data.rest.handler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.net.Uri;
@@ -36,16 +39,21 @@ public class ItemListHandler implements ResponseHandler<TodoItemList>
 	@Override
 	public TodoItemList handleResponse(final TodoItemList response) {
 		Log.d(TAG, "handle TodoItemList response: " + response);
+		final List<TodoItem> items = new ArrayList<TodoItem>();
+		int deleteCount = contentResolver.delete(TodoItemDescriptor.CONTENT_URI, null, null);
+		Log.d(TAG, deleteCount + " items deleted");
 		if (response.getItems().size() > 0) {
 			for (final TodoItem item : response.getItems()) {
 				final ContentValues values = TodoItem.initContentValues(item);
 				final Uri uri = contentResolver.insert(TodoItemDescriptor.CONTENT_URI, values);
 				final Long internalId = Long.valueOf(uri.getLastPathSegment());
-				item.setInternalId(internalId);
 				Log.d(TAG, "stored item in local db: " + uri);
+				item.setInternalId(internalId);
+				items.add(item);
 			}
+			Log.d(TAG, "stored " + response.getItems().size() + " items in local db");
 		}
-		return response;
+		return new TodoItemList(items);
 	}
 
 }

@@ -16,6 +16,8 @@ public interface ItemService
 
 	TodoItem createItem(TodoItem item);
 
+	TodoItemList createItemList(TodoItemList list);
+
 	TodoItem updateItem(TodoItem item);
 
 	int deleteItem(TodoItem item);

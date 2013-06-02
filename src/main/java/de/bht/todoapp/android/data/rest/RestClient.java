@@ -121,6 +121,26 @@ public class RestClient implements ItemService
 		return newItem;
 	}
 
+	public TodoItemList createItemList(final TodoItemList itemList) {
+		final HttpHeaders requestHeaders = createAuthorizedHeaders();
+		requestHeaders.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+		requestHeaders.setContentType(MediaType.APPLICATION_JSON);
+		final HttpEntity<TodoItemList> requestEntity = new HttpEntity<TodoItemList>(itemList, requestHeaders);
+		final RestTemplate restTemplate = getRestTemplate();
+		TodoItemList list = null;
+		try {
+			ResponseEntity<TodoItemList> response = restTemplate.exchange(SERVER_ROOT + APPLICATION_PATH + ITEMS_URI + "/list", HttpMethod.POST, requestEntity, TodoItemList.class);
+			if (response.getStatusCode() == HttpStatus.OK) {
+				list = response.getBody();
+				Log.d(TAG, "list remotely saved: " + list);
+			}
+		}
+		catch (RestClientException e) {
+			Log.d(TAG, "Unable to create itemlist: " + e.getMessage());
+		}
+		return list;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

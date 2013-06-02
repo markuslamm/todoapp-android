@@ -3,7 +3,10 @@
  */
 package de.bht.todoapp.android.data.rest;
 
+import android.app.Activity;
 import de.bht.todoapp.android.data.ItemService;
+import de.bht.todoapp.android.data.rest.handler.ItemListHandler;
+import de.bht.todoapp.android.data.rest.handler.ResponseHandler;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.model.TodoItemList;
 import de.bht.todoapp.android.ui.base.BaseActivity;
@@ -38,8 +41,10 @@ public class RestItemService implements ItemService
 	@Override
 	public TodoItemList findAllItems() {
 		final RestClient client = new RestClient(getEmail(), getPasswort());
-		final TodoItemList itemList = client.findAllItems();
-		return itemList;
+		final TodoItemList response = client.findAllItems();
+		final ResponseHandler<TodoItemList> handler = new ItemListHandler(((Activity) context).getContentResolver());
+		final TodoItemList result = handler.handleResponse(response);
+		return result;
 	}
 
 
@@ -56,6 +61,12 @@ public class RestItemService implements ItemService
 		final RestClient client = new RestClient(getEmail(), getPasswort());
 		final TodoItem newItem = client.createItem(item);
 		return newItem;
+	}
+
+	public TodoItemList createItemList(final TodoItemList itemList) {
+		final RestClient client = new RestClient(getEmail(), getPasswort());
+		final TodoItemList list = client.createItemList(itemList);
+		return list;
 	}
 
 	/*

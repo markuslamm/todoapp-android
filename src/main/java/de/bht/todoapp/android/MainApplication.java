@@ -35,7 +35,7 @@ public class MainApplication extends Application
 	private SharedPreferences prefs;
 	private NetworkChangeReceiver networkReceiver;
 
-	private boolean networkConnectionAvailable = false;
+	private Boolean networkConnectionAvailable = Boolean.FALSE;
 
 	/*
 	 * (non-Javadoc)
@@ -97,7 +97,8 @@ public class MainApplication extends Application
 	private void storeTodoItems(int size) {
 		for (int i = 1; i <= size; i++) {
 			final ContentValues value = new ContentValues();
-			value.put(TodoItemDescriptor.SERVERID_COLUMN, i + TodoItemDescriptor.SERVERID_COLUMN);
+			// value.put(TodoItemDescriptor.SERVERID_COLUMN, i +
+			// TodoItemDescriptor.SERVERID_COLUMN);
 			value.put(TodoItemDescriptor.TITLE_COLUMN, i + TodoItemDescriptor.TITLE_COLUMN);
 			value.put(TodoItemDescriptor.DESCRIPTION_COLUMN, i + TodoItemDescriptor.DESCRIPTION_COLUMN);
 			final String status = (i % 2 == 0) ? TodoItem.Status.OPEN.toString() : TodoItem.Status.CLOSED.toString();
@@ -111,7 +112,7 @@ public class MainApplication extends Application
 		}
 	}
 	
-	public boolean hasNetworkConnection() {
+	public Boolean hasNetworkConnection() {
 		return networkConnectionAvailable;
 	}
 
@@ -139,11 +140,11 @@ public class MainApplication extends Application
 				//Log.d(TAG, "network info: " + info.toString());
 				if (info.isConnected()) {
 					Log.d(TAG, "network connected with: " + info.toString());
-					networkConnectionAvailable = true;
+					networkConnectionAvailable = Boolean.TRUE;
 					toastMsg = getString(R.string.connection_available);
 				}
 			}
-			// displayErrorAlert(MainApplication.this, "", toastMsg);
+			displayToast(MainApplication.this, toastMsg);
 		}
 	}
 

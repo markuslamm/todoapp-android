@@ -47,12 +47,17 @@ public class MainApplication extends Application
 		super.onCreate();
 		Log.d(TAG, "Application onCreate()...");
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		if (CREATE_DATA) {
-			storeTodoItems(5);
-		}
+
 		final IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
 		networkReceiver = new NetworkChangeReceiver();
 		registerReceiver(networkReceiver, filter);
+
+		int itemCount = getContentResolver().delete(TodoItemDescriptor.CONTENT_URI, null, null);
+		int accountCount = getContentResolver().delete(TodoItemDescriptor.CONTENT_URI, null, null);
+
+		Log.d(TAG, itemCount + " items deleted");
+		Log.d(TAG, accountCount + " accounts deleted");
+
 	}
 
 	public SharedPreferences getPreferences() {

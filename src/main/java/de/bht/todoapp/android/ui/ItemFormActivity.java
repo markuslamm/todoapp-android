@@ -24,10 +24,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import de.bht.todoapp.android.R;
 import de.bht.todoapp.android.data.ItemService;
+import de.bht.todoapp.android.data.db.LocalItemService;
 import de.bht.todoapp.android.data.db.TodoItemDescriptor;
-import de.bht.todoapp.android.data.rest.RestItemService;
-import de.bht.todoapp.android.data.rest.handler.ItemHandler;
-import de.bht.todoapp.android.data.rest.handler.ResponseHandler;
 import de.bht.todoapp.android.model.TodoItem;
 import de.bht.todoapp.android.ui.base.AbstractActivity;
 import de.bht.todoapp.android.ui.base.AbstractAsyncTask;
@@ -229,13 +227,9 @@ public class ItemFormActivity extends AbstractActivity
 		@Override
 		protected TodoItem doInBackground(TodoItem... items) {
 			final TodoItem item = items[0];
-			final ItemService itemService = new RestItemService(ItemFormActivity.this);
-			// final ItemService itemService = new
-			// LocalItemService(getContentResolver());
-			TodoItem managedItem = (itemModel.getEntityId() == null) ? itemService.createItem(item) : itemService.updateItem(item);
-			final ResponseHandler<TodoItem> handler = new ItemHandler(getContentResolver());
-			managedItem = handler.handleResponse(managedItem);
-			return managedItem;
+			final ItemService localItemService = new LocalItemService(getContentResolver());
+			final TodoItem localItem = (itemModel.getInternalId() == null) ? localItemService.createItem(item) : localItemService.updateItem(item);
+			return localItem;
 		}
 
 		@Override

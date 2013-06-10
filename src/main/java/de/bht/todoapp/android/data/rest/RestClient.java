@@ -112,7 +112,7 @@ public class RestClient implements ItemService
 					requestEntity, TodoItem.class);
 			if (response.getStatusCode() == HttpStatus.OK) {
 				newItem = response.getBody();
-				Log.d(TAG, "Response body: " + item);
+				Log.d(TAG, "item remotely created: " + newItem);
 			}
 		}
 		catch (RestClientException e) {

@@ -48,6 +48,7 @@ public class LocalItemService implements ItemService
 				item.setDescription(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.DESCRIPTION_COLUMN)));
 				item.setLatitude(cursor.getDouble(cursor.getColumnIndex(TodoItemDescriptor.LATITUDE_COLUMN)));
 				item.setLongitude(cursor.getDouble(cursor.getColumnIndex(TodoItemDescriptor.LONGITUDE_COLUMN)));
+				item.setDueDate(cursor.getLong(cursor.getColumnIndex(TodoItemDescriptor.DUEDATE_COLUMN)));
 				item.setPriority(TodoItem.getPriorityFromString(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.PRIORITY_COLUMN))));
 				item.setStatus(TodoItem.getStatusFromString(cursor.getString(cursor.getColumnIndex(TodoItemDescriptor.STATUS_COLUMN))));
 				list.add(item);
